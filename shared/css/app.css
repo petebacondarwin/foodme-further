@@ -1,0 +1,57 @@
+
+.price, .rating {
+  min-width: 10em;
+}
+
+
+.price .glyphicon:hover, .rating .glyphicon:hover {
+  text-shadow: white 0 0  2px,
+  white 0 0  2px,
+  white 0 0  2px,
+  white 0 0  2px,
+  blue  0 0 10px;
+}
+
+
+
+/* fmRating directive */
+.fm-rating {
+  color: #a9a9a9;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+}
+
+.fm-rating li {
+  list-style-type: none;
+  display: inline-block;
+  padding: 1px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.fm-rating .selected {
+  color: #000000;
+}
+
+
+
+/* Animations */
+.fade {
+  -webkit-transition:all linear .5s;
+  -moz-transition:all linear 0.5s;
+  -o-transition:all linear 0.5s;
+  transition:all linear .5s;
+  opacity: 1;
+  overflow: hidden;
+}
+
+
+.fade .abs {
+  position: absolute;
+}
+
+
+.fade.ng-hide, .fade.ng-hide-active {
+  opacity: 0;
+}
