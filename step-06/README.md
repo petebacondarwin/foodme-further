@@ -1,4 +1,4 @@
-# Step 5 - e2e testing
+# Step 6 - e2e testing
 
 ## Where are we?
 
