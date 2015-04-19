@@ -1,0 +1,55 @@
+<div class="col-md-12">
+  <div class="row fm-restaurant">
+    <div class="col-md-2">
+      <img ng-src="../shared/img/restaurants/{{component.restaurant.id}}.jpg" class="img-rounded">
+    </div>
+
+    <div class="col-md-10">
+      <h3>{{component.restaurant.name}}</h3>
+
+      <div class="row">
+        <div class="col-md-2">
+          <div>{{component.restaurant.address}}</div>
+          <div ng-bind-html="component.restaurant.rating | rating : 'star'"></div>
+          <div ng-bind-html="component.restaurant.price | rating : 'gbp'"></div>
+        </div>
+        <div class="col-md-4">
+          <div>{{component.restaurant.description}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="fm-panel fm-menu-list">
+        <div class="fm-heading">Menu</div>
+
+        <div class="fm-content">
+          <ul>
+
+            <li ng-repeat="menuItem in component.restaurant.menuItems">
+              <a href>
+                <span>{{menuItem.name}}</span>
+                <span>{{menuItem.price | currency}}</span>
+                <i class="glyphicon glyphicon-plus"></i>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="fm-panel fm-cart">
+        <div class="fm-heading">Your order</div>
+        <div class="fm-content">
+          <div class="fm-restaurant">{{ component.restaurant.name }}</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
