@@ -17,12 +17,14 @@
 (describe router and routing concepts)
 * Step 7 - Implement router and initial restaurant list view
 * Step 8 - Add static views (about-us / help / how-it-works)
+* Step 9 - Move restaurant view logic into its own component
 
-(explain about ngAnimate and basic component directives)
-* Step X - Add animated navigation directive
+(explain about ngAnimate and CSS transitions)
+* Step 10 - Add animated navigation indicators
 
 (explain about $routeParams and resolves)
-* Step X - Add detailed menu view
+* Step 11 - Refactor restaurant list into a resolved service
+* Step 12 - Add detailed menu view
 
 (explain more about directives and the directive API)
 * Step X - Create reusable fmDeliverTo component
