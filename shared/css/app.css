@@ -35,28 +35,6 @@
 }
 
 
-
-/* Animations */
-.fade {
-  -webkit-transition:all linear .5s;
-  -moz-transition:all linear 0.5s;
-  -o-transition:all linear 0.5s;
-  transition:all linear .5s;
-  opacity: 1;
-  overflow: hidden;
-}
-
-
-.fade .abs {
-  position: absolute;
-}
-
-
-.fade.ng-hide, .fade.ng-hide-active {
-  opacity: 0;
-}
-
-
 .fm-panel {
   background-color: #fff;
 
@@ -83,4 +61,14 @@
   background-color: #E5E5E5;
   padding: 10px 10px 10px 10px;
   font-size: 18px;
+}
+
+
+/* Animations */
+.navbar-nav > li, .navbar-nav > li > a {
+  transition: 0.5s ease-out all;
+}
+
+.navbar-nav > li.active-add-active a {
+  background-color: white !important;
 }
