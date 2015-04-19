@@ -1,4 +1,4 @@
-# Step 5 - add routing
+# Step 7 - add routing
 
 ## Where are we?
 
