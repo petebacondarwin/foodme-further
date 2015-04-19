@@ -11,9 +11,12 @@
 
 (explain about e2e testing and protractor)
 * Step 5 - Add some e2e tests to what we have already
+(explain about PageObjects)
+* Step 6 - Add PageObject to clean up e2e tests
 
 (describe router and routing concepts)
-* Step X - Implement router and some static views (who-we-are / help / how-it-works)
+* Step 7 - Implement router and initial restaurant list view
+* Step 8 - Add static views (about-us / help / how-it-works)
 
 (explain about ngAnimate and basic component directives)
 * Step X - Add animated navigation directive
