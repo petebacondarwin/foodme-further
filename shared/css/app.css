@@ -55,3 +55,32 @@
 .fade.ng-hide, .fade.ng-hide-active {
   opacity: 0;
 }
+
+
+.fm-panel {
+  background-color: #fff;
+
+  border: 1px solid black;
+
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-left-radius: 3px;
+
+  -webkit-border-top-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  border-top-right-radius: 3px;
+
+  margin-bottom: 20px;
+
+  overflow: hidden;
+}
+
+.fm-panel > .fm-content {
+  padding: 10px 10px 20px 10px;
+}
+
+.fm-panel > .fm-heading {
+  background-color: #E5E5E5;
+  padding: 10px 10px 10px 10px;
+  font-size: 18px;
+}
