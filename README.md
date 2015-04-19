@@ -26,13 +26,17 @@
 * Step 11 - Refactor restaurant list into a resolved service
 * Step 12 - Add detailed menu view
 
-(explain more about directives and the directive API)
-* Step X - Create reusable fmDeliverTo component
+(explain more about directives, bindToController, testing directives and their templates)
+* Step 13 - Create reusable fmDeliverTo component
 
 (talk about using services to share data)
-* Step X - Add a shopping cart
+* Step 14 - Add a shopping cart
 
+(explain about builds (gulp), minimization (uglify) and injection issues (ng-annotate)
+* Step 15 - Add injection annotations
+
+## More
+
+* Step X - Minify the JS code
 * Step X - Add a checkout and thank you view
 
-(explain about minimization issues)
-* Step X - Add injection annotations
