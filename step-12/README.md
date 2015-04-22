@@ -1,4 +1,4 @@
-# Step 11 - add detailed menu view
+# Step 12 - add detailed menu view
 
 ## Where are we?
 
