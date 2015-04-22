@@ -8,7 +8,7 @@ with unit tests for AppController and rating filter.
 
 ## Goals
 
-* Create unit tests for `rating` directive
+* Create unit tests for `fmRating` directive
 
 ## Topics
 
@@ -19,7 +19,7 @@ with unit tests for AppController and rating filter.
 
 ## Tasks
 
-* Create an instance of the `rating` directive to unit test using `$compile`
+* Create an instance of the `fmRating` directive to unit test using `$compile`
 
 Create rating.spec.js:
 
@@ -30,13 +30,10 @@ describe('fmRating directive', function() {
 
   beforeEach(module('rating'));
 
-  beforeEach(inject(function($compile, $rootScope, $rootElement) {
-    $scope = $rootScope.$new();
-    element = $rootElement;
-
-    element.html('<fm-rating glyph="star" rating="model.value"></fm-rating>');
-    $compile(element)($scope);
-    $scope.$apply('model.value = 0');
+  beforeEach(inject(function($compile, $rootScope) {
+    $scope = $rootScope;
+    element = $compile('<fm-rating glyph="star" rating="model.value"></fm-rating>')($scope);
+    $scope.$apply('model = { value: 0 }');
   }));
 });
 ```

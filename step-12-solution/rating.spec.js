@@ -32,13 +32,10 @@ describe('fmRating directive', function() {
 
   beforeEach(module('rating'));
 
-  beforeEach(inject(function($compile, $rootScope, $rootElement) {
-    $scope = $rootScope.$new();
-    element = $rootElement;
-
-    element.html('<fm-rating glyph="star" rating="model.value"></fm-rating>');
-    $compile(element)($scope);
-    $scope.$apply('model.value = 0');
+  beforeEach(inject(function($compile, $rootScope) {
+    $scope = $rootScope;
+    element = $compile('<fm-rating glyph="star" rating="model.value"></fm-rating>')($scope);
+    $scope.$apply('model = { value: 0 }');
   }));
 
   it('should contain five star glyphs', function() {
