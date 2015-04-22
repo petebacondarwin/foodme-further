@@ -73,6 +73,12 @@ About to write to /Users/pete/dev/angular/foodme-further/package.json:
 Is this ok? (yes)
 ```
 
+* Install karma libraries
+
+```bash
+$ npm install --save-dev karma karma-jasmine karma-chrome-launcher
+```
+
 * Initialize karma config in the step folder
 
 ```bash
