@@ -27,7 +27,7 @@ with unit tests and e2e tests; and componentized routing
     return $location.path() === routeName;
   };
 
-}]);
+});
 ```
 
 * Add unit tests for this controller to app.spec.js
