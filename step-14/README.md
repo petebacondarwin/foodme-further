@@ -27,7 +27,7 @@ angular.module('shoppingCart', ['localStorage'])
   <script src="shoppingCart.js"></script>
 ```
 
-* Add the `shoppingCartModule` as a dependency of the `app` module
+* Add the `shoppingCart` as a dependency of the `app` module
 
 ```js
 angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
