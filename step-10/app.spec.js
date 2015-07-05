@@ -42,13 +42,8 @@ describe('rating filter', function() {
     ratingFilter = _ratingFilter_;
   }));
 
-  it('should return a trusted HTML string', inject(function($sce) {
-    var trustedValue = ratingFilter(3, 'star');
-    var realValue = $sce.getTrustedHtml(trustedValue);
-    expect(realValue).toEqual(
-      '<span class="glyphicon glyphicon-star"></span>' +
-      '<span class="glyphicon glyphicon-star"></span>' +
-      '<span class="glyphicon glyphicon-star"></span>'
-    );
-  }));
+  it('should return a string of repeated symbols', function() {
+    var value = ratingFilter(3, '*');
+    expect(value).toEqual('***');
+  });
 });

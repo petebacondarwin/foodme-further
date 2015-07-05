@@ -18,41 +18,42 @@ with unit tests for AppController.
 
 ## Tasks
 
-* Use $sce and $filter to test the ratingFilter
+* (Option a) Use and $filter to test the ratingFilter
 
 ```js
 describe('rating filter', function() {
 
   beforeEach(module('app'));
 
-  it('should return a trusted HTML string', inject(function($sce, $filter) {
+  it('should return a string of repeated symbols', inject(function($filter) {
     var ratingFilter = $filter('rating');
-    var trustedValue = ratingFilter(3, 'star');
-    var realValue = $sce.getTrustedHtml(trustedValue);
-    expect(realValue).toEqual(
-      '<span class="glyphicon glyphicon-star"></span>' +
-      '<span class="glyphicon glyphicon-star"></span>' +
-      '<span class="glyphicon glyphicon-star"></span>'
-    );
+    var value = ratingFilter(3, '*');
+    expect(value).toEqual('***');
   }));
 });
 ```
 
-* Inject the rating filter (as `ratingFilter`) directly into the test
+* (Option b) Inject the rating filter (as `ratingFilter`) directly into the test
 
 ```js
-  it('should return a trusted HTML string', inject(function($sce, ratingFilter) {
-    ...
-  }));
+it('should return a trusted HTML string', inject(function(ratingFilter) {
+  var value = ratingFilter(3, '*');
+  expect(value).toEqual('***');
+}));
 ```
 
-* Use underscores to assign the ratingFilter outside of the current function context
+* (Option c) Use underscores to assign the ratingFilter outside of the current function context
 
 ```js
-  var ratingFilter
-  beforeEach(inject(function(_ratingFilter_) {
-    ratingFilter = _ratingFilter_;
-  }));
+var ratingFilter
+beforeEach(inject(function(_ratingFilter_) {
+  ratingFilter = _ratingFilter_;
+}));
+
+it('should return a trusted HTML string', function() {
+  var value = ratingFilter(3, '*');
+  expect(value).toEqual('***');
+});
 ```
 
 ## Extras
