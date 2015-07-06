@@ -1,97 +1,95 @@
-# Step 5 - e2e testing
+# Step 5 - add routing
 
 ## Where are we?
 
-A unit-tested Angular application running from a local webserver
+An Angular application running from a local webserver;
+with unit tests
 
 ## Goals
 
-* Ensure protractor is installed
-* Configure a protractor test config
-* Create and run initial e2e tests
+* Implement routing to enable multiple URL driven views
+* Move the current HTML into a new view
 
 ## Topics
 
-* Protractor
+* ngRoute
+* $routeProvider
 
 ## Tasks
 
-* Install protractor and webdriver
+* Load the `../js/angular-route.js` file
 
-```bash
-$ npm install -g protractor
-$ webdriver-manager update
+```html
+  <script src="../shared/js/angular-route.js"></script>
 ```
 
-* Ensure that the http server is running in the root of the repository
-
-```bash
-$ cd foodme-further
-$ http-server
-```
-
-* Create protractor.conf.js in the step folder
+* Add the `ngRoute` module as a dependency of our `app` module
 
 ```js
-var path = require('path');
-var stepPath = path.basename(__dirname);
-
-exports.config = {
-  specs: ['e2e/*.spec.js'],
-  baseUrl: 'http://localhost:8080/' + stepPath + '/',
-  directConnect: true
-};
+angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'localStorage', 'rating'])
 ```
 
-* Exclude the `protractor.conf.js` from the karma config
+* Add the `angular-route.js` file to the files to load in the karma config
 
 ```js
-    // list of files to exclude
-    exclude: [
-      'protractor.conf.js'
+    files: [
+      '../shared/js/angular.js',
+      '../shared/js/angular-messages.js',
+      '../shared/js/angular-message-format.js',
+      '../shared/js/angular-route.js',
+      '../shared/js/angular-mocks.js',
+      '*.js'
     ],
 ```
 
-* Create `e2e/app.spec.js` protractor spec file
+* Create a new `components/restaurants/index.html` template for the current HTML
+
+Copy the restaurant filtering form and the restaurant list HTMl from index.html
+
+```html
+<!-- Restaurant List -->
+<div class="row">
+  <div class="col-md-3">
+    <form role="form" class="well" name="app.filterForm">
+      <legend>Filter Restaurants</legend>
+      ...
+    </form>
+  </div>
+  <div class="col-md-9">
+    <div class="alert alert-info" role="alert">
+    {{ app.filteredRestaurants.length, plural,
+      =0 {No restaurants found!}
+      =1 {Only one restaurant found!}
+      other {# restaurants found.}
+    }}
+    </div>
+    <table class="table table-striped">
+      ...
+    </table>
+  </div>
+</div>
+```
+
+* Remove the restaurant specific HTML from index.html and replace with an `ng-view` directive
+
+```html
+<ng-view autoscroll></ng-view>
+```
+
+* Configure the application to display this component when we navigate to the root of the application
 
 ```js
-describe('app', function() {
-
-  beforeEach(function() {
-    browser.get('index.html');
-  });
-
-  it('should update the delivery info box when the deliveryForm is changed', function() {
-
-    var userNameInput = element(by.model('app.user.name'));
-    userNameInput.clear();
-    userNameInput.sendKeys('test user');
-
-    var hideDeliveryFormLink = element(by.css('a[ng-click="app.hideDeliveryForm()"]'));
-    hideDeliveryFormLink.click();
-
-    var userNameDisplay = element(by.binding('app.user.name'));
-    expect(userNameDisplay.getText()).toContain('test user');
-  });
-
-
-  it('should display a list of restaurants', function() {
-    var restaurantList = element.all(by
-        .repeater('restaurant in app.filteredRestaurants')
-        .column('restaurant.name'));
-    expect(restaurantList.count()).toEqual(39);
-    expect(restaurantList.get(0).getText()).toEqual('Angular Pizza');
-  });
-});
+.config(function($routeProvider) {
+  $routeProvider
+    .when('/restaurants', {
+      templateUrl: 'components/restaurants'
+    })
+    .otherwise('/restaurants');
+})
 ```
 
-* Execute the protractor specs from the step folder
+* Check that the karma tests still pass
 
 ```bash
-$ cd step-05
-$ protractor protractor.conf.js
+$ karma start --single-run
 ```
-
-## Extras
-
-* Try running protractor with a standalone Selenium server:

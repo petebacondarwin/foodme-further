@@ -18,7 +18,6 @@ module.exports = function(config) {
       '../shared/js/angular.js',
       '../shared/js/angular-messages.js',
       '../shared/js/angular-message-format.js',
-      '../shared/js/angular-route.js',
       '../shared/js/angular-mocks.js',
       '*.js'
     ],

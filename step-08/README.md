@@ -1,126 +1,89 @@
-# Step 8 - add routing
+# Step 6 - e2e testing
 
 ## Where are we?
 
 An Angular application running from a local webserver;
-with unit tests and e2e tests;
-and routing
+with unit tests and initial e2e tests
 
 ## Goals
 
-* Add additional static views
-* Add navigation links to these views
+* Use a PageObject to make e2e tests clearer
 
 ## Topics
 
+* Protractor PageObjects
+
 ## Tasks
 
-* Create a new `components/help/index.html` template for the help view
-
-```html
-<div class="col-md-12">
-  <div class="fm-panel">
-    <div class="fm-heading">Help</div>
-    <div class="fm-content">
-      <h4>Until how late do you deliver?</h4>
-      <p>We deliver as late as 9pm from all restaurants.</p>
-
-      <h4>What payment methods do you accept?</h4>
-      <p>We gladly accept all major credit cards.</p>
-
-      <h4>I got an extra chocolate muffin with my order, what is this about?</h4>
-      <p>That's just a small thank-you gift from FoodMe. Enjoy it!</p>
-    </div>
-  </div>
-</div>
-```
-
-* Create a new `components/about-us/index.html` template for the about-us view
-
-```html
-<div class="col-md-12">
-  <div class="fm-panel">
-    <div class="fm-heading">Who we are</div>
-    <div class="fm-content">
-      <p>We are purple unicorns jockeys and knitters of woolen socks!</p>
-    </div>
-  </div>
-</div>
-```
-
-* Create a new `components/how-it-works/index.html` template for the how-it-works view
-
-```html
-<div class="col-md-12">
-  <div class="fm-panel">
-    <div class="fm-heading">How it works</div>
-    <div class="fm-content">
-      <p>It's simple:</p>
-      <ol>
-        <li>Enter delivery address</li>
-        <li>Pick a great restaurant</li>
-        <li>Select yummy food</li>
-        <li>Enter delivery time</li>
-        <li>Enter payment details</li>
-        <li>And the food will be on the way!</li>
-      </ol>
-    </div>
-  </div>
-</div>
-```
-
-* Configure the application to display these views
+* Create a PageObject for the app
 
 ```js
-.config(function($routeProvider) {
-  $routeProvider
-    .when('/restaurants', {
-      templateUrl: 'components/restaurants'
-    })
-    .when('/about-us', {
-      templateUrl: 'components/about-us'
-    })
-    .when('/help', {
-      templateUrl: 'components/help'
-    })
-    .when('/how-it-works', {
-      templateUrl: 'components/how-it-works'
-    })
-    .otherwise('/restaurants');
-})
+function HomePage() {};
+HomePage.prototype = {
+  get: function() {
+    browser.get('index.html');
+  },
+
+  setUserName: function(name) {
+    var e = element(by.model('app.user.name'));
+    e.clear();
+    e.sendKeys(name);
+  },
+
+  getDisplayedUserName: function() {
+    return element(by.binding('app.user.name'));
+  },
+
+  hideDeliveryForm: function() {
+    element(by.css('a[ng-click="app.hideDeliveryForm()"]')).click();
+  },
+
+  showDeliveryForm: function() {
+    element(by.css('a[ng-click="app.showDeliveryForm()"]')).click();
+  },
+
+  getRestaurantList: function(column) {
+    var repeater = by.repeater('restaurant in app.filteredRestaurants');
+    if (column) {
+      repeater = repeater.column(column);
+    }
+    return element.all(repeater);
+  }
+};
+
+module.exports = HomePage;
 ```
 
-* Add links to these views in the navigation panel
+* Import and use the `HomePage` object in the app.spec.js e2e file
 
-```html
-<!-- Navigation Bar -->
-<div class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#/">FoodMe</a>
-    </div>
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li><a href="#/">Home</a></li>
-        <li><a href="#/how-it-works">How it works</a></li>
-        <li><a href="#/about-us">Who we are</a></li>
-      </ul>
+```js
+var HomePage = require('./home.page');
 
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#/help">Help</a></li>
-      </ul>
-    </div>
-  </div>
-</div>
+describe('app', function() {
+  var homePage;
+
+  beforeEach(function() {
+    homePage = new HomePage();
+    homePage.get();
+  });
+
+  it('should update the delivery info box when the deliveryForm is changed', function() {
+    homePage.setUserName('test user');
+    homePage.hideDeliveryForm();
+    expect(homePage.getDisplayedUserName().getText()).toContain('test user');
+  });
+
+
+  it('should display a list of restaurants', function() {
+    var restaurantList = homePage.getRestaurantList('restaurant.name');
+    expect(restaurantList.count()).toEqual(39);
+    expect(restaurantList.get(0).getText()).toEqual('Angular Pizza');
+  });
+});
 ```
 
-* Check that the karma and protractor tests still pass
-
-```bash
-$ karma start --single-run
-$ protractor protractor.conf.js
-```
 
 ## Extras
 
-* Try adding more static views of your own
+* Try adding checks that test the validation of the deliveryInfoForm
+* Try adding checks that test the filtering of the restaurant list

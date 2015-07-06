@@ -1,13 +1,4 @@
-angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'localStorage', 'rating'])
-
-
-.config(function($routeProvider) {
-  $routeProvider
-    .when('/restaurants', {
-      templateUrl: 'components/restaurants'
-    })
-    .otherwise('/restaurants');
-})
+angular.module('app', ['ngMessages', 'ngMessageFormat', 'localStorage', 'rating'])
 
 .controller('AppController', function(localStorageBinding, $http, $rootScope) {
 

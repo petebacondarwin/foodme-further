@@ -1,4 +1,22 @@
-angular.module('app', ['ngMessages', 'ngMessageFormat', 'localStorage', 'rating'])
+angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'localStorage', 'rating'])
+
+
+.config(function($routeProvider) {
+  $routeProvider
+    .when('/restaurants', {
+      templateUrl: 'components/restaurants'
+    })
+    .when('/about-us', {
+      templateUrl: 'components/about-us'
+    })
+    .when('/help', {
+      templateUrl: 'components/help'
+    })
+    .when('/how-it-works', {
+      templateUrl: 'components/how-it-works'
+    })
+    .otherwise('/restaurants');
+})
 
 .controller('AppController', function(localStorageBinding, $http, $rootScope) {
 
