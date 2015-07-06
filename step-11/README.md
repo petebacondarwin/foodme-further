@@ -1,4 +1,4 @@
-# Step 11 - add detailed menu view
+# Step 11 - Create restaurants service
 
 ## Where are we?
 
