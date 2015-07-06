@@ -7,7 +7,7 @@ trap cleanUp EXIT
 
 
 # Start up the web server
-http-server -p 8080 &
+http-server -p 8080 -s &
 WEBSERVER_PID=$!
 
 
