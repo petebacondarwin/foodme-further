@@ -10,7 +10,7 @@ describe('app', function() {
     userNameInput.clear();
     userNameInput.sendKeys('test user');
 
-    var hideDeliveryFormLink = element(by.css('#hideDeliveryFormLink'));
+    var hideDeliveryFormLink = element(by.css('a[ng-click="app.hideDeliveryForm()"]'));
     hideDeliveryFormLink.click();
 
     var userNameDisplay = element(by.binding('app.user.name'));
