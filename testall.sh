@@ -1,4 +1,9 @@
-for i in {1..15}
+cd step-01-solution
+pwd
+karma start --single-run
+cd ..
+
+for i in {2..15}
 do
   cd step-`printf %02d $i`
   pwd
