@@ -1,4 +1,4 @@
-# Step 9 - move restaurant logic into component
+# Step 9 - Move restaurant logic into component
 
 ## Where are we?
 

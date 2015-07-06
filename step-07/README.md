@@ -1,4 +1,4 @@
-# Step 5 - e2e testing
+# Step 7 - End to End (e2e) testing with Protractor
 
 ## Where are we?
 

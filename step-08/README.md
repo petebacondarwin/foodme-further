@@ -1,4 +1,5 @@
-# Step 6 - e2e testing
+# Step 6 - Add PageObjects in e2e tests
+
 
 ## Where are we?
 
