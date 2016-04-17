@@ -103,11 +103,9 @@ Press tab to list possible options. Enter empty string to move to the next quest
 What is the location of your source and test files ?
 You can use glob patterns, eg. "js/*.js" or "test/**/*Spec.js".
 Enter empty string to move to the next question.
-> ../shared/js/angular.js
-> ../shared/js/angular-messages.js
-> ../shared/js/angular-message-format.js
-> ../shared/js/angular-mocks.js
-> *.js
+> ../node_modules/angular/angular.js
+> ../node_modules/angular-*/angular-*.js
+> **/*.js
 >
 
 Should any of the files included by the previous patterns be excluded ?

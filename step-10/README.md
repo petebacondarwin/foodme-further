@@ -84,7 +84,7 @@ $ karma start --single-run
 * Load `angular-animate.js` in index.html
 
 ```html
-  <script src="../shared/js/angular-animate.js"></script>
+  <script src="../node_modules/angular-animate/angular-animate.js"></script>
 ```
 
 * Add `ngAnimate` as a dependency of the `app` module
@@ -110,12 +110,12 @@ angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
 
 ```js
 files: [
-  '../shared/js/angular.js',
-  '../shared/js/angular-messages.js',
-  '../shared/js/angular-message-format.js',
-  '../shared/js/angular-route.js',
-  '../shared/js/angular-animate.js',
-  '../shared/js/angular-mocks.js',
+  '../node_modules/angular/angular.js',
+  '../node_modules/angular-messages/angular-messages.js',
+  '../node_modules/angular-message-format/angular-message-format.js',
+  '../node_modules/angular-route/angular-route.js',
+  '../node_modules/angular-animate/angular-animate.js',
+  '../node_modules/angular-mocks/angular-mocks.js',
   '*.js',
   'components/*/*.js'
 ],

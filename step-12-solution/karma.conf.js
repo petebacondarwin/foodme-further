@@ -15,12 +15,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '../shared/js/angular.js',
-      '../shared/js/angular-messages.js',
-      '../shared/js/angular-message-format.js',
-      '../shared/js/angular-route.js',
-      '../shared/js/angular-animate.js',
-      '../shared/js/angular-mocks.js',
+      '../node_modules/angular/angular.js',
+      '../node_modules/angular-*/angular-*.js',
       '*.js',
       'components/*/*.js'
     ],

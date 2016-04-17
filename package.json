@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/petebacondarwin/foodme-further/issues"
   },
-  "homepage": "https://github.com/petebacondarwin/foodme-further"
+  "homepage": "https://github.com/petebacondarwin/foodme-further",
+  "dependencies": {
+    "angular": "^1.5.3",
+    "angular-animate": "^1.5.3",
+    "angular-message-format": "^1.5.3",
+    "angular-messages": "^1.5.3"
+  }
 }

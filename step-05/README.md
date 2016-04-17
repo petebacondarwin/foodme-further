@@ -20,7 +20,7 @@ with unit tests
 * Load the `../js/angular-route.js` file
 
 ```html
-  <script src="../shared/js/angular-route.js"></script>
+  <script src="../node_modules/angular-route/angular-route.js"></script>
 ```
 
 * Add the `ngRoute` module as a dependency of our `app` module
@@ -33,11 +33,11 @@ angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'localStorage
 
 ```js
     files: [
-      '../shared/js/angular.js',
-      '../shared/js/angular-messages.js',
-      '../shared/js/angular-message-format.js',
-      '../shared/js/angular-route.js',
-      '../shared/js/angular-mocks.js',
+      '../node_modules/angular/angular.js',
+      '../node_modules/angular-messages/angular-messages.js',
+      '../node_modules/angular-message-format/angular-message-format.js',
+      '../node_modules/angular-route/angular-route.js',
+      '../node_modules/angular-mocks/angular-mocks.js',
       '*.js'
     ],
 ```
