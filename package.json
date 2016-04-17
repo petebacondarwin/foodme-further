@@ -20,6 +20,7 @@
     "angular": "^1.5.3",
     "angular-animate": "^1.5.3",
     "angular-message-format": "^1.5.3",
-    "angular-messages": "^1.5.3"
+    "angular-messages": "^1.5.3",
+    "angular-route": "^1.5.3"
   }
 }
