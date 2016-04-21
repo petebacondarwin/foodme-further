@@ -19,6 +19,6 @@ echo "Copying over files from step-$STEP"
 cp -r step-$STEP/ workspace/
 echo "Copying in assets"
 cp -r assets workspace/assets
-echo "Reinstalling node_modules"
+echo "Linking to node_modules"
 cd workspace
 ln -s ../node_modules node_modules
