@@ -13,13 +13,12 @@ BASE=${0%/*};
 cd $BASE
 echo "Removing previous workspace"
 rm -rf workspace/*
+echo "Copying in package.json"
+cp -r package.json workspace/
 echo "Copying over files from step-$STEP"
-mkdir -p workspace/src
 cp -r step-$STEP/ workspace/
 echo "Copying in assets"
 cp -r assets workspace/assets
-echo "Copying in package.json"
-cp -r package.json workspace/
 echo "Reinstalling node_modules"
 cd workspace
 ln -s ../node_modules node_modules

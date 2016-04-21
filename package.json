@@ -6,7 +6,8 @@
     "start": "lite-server",
     "prebuild": "mkdir -p dist",
     "build": "babel src -o dist/app.js --source-maps",
-    "watch": "watchy -w src -- npm run build"
+    "watch": "watchy -w src -- npm run build",
+    "test": "karma start"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "angular-route": "^1.5.5"
   },
   "devDependencies": {
+    "angular-mocks": "^1.5.5",
     "babel-cli": "^6.7.5",
     "lite-server": "^2.2.0",
     "watchy": "^0.6.6"
