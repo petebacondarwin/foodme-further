@@ -5,14 +5,12 @@
   <title>Angular FoodMe</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../shared/css/bootstrap-cerulean.css">
-  <link rel="stylesheet" href="../shared/css/app.css">
-  <script src="../node_mpdules/angular/angular.js"></script>
-  <script src="../node_mpdules/angular-messages/angular-messages.js"></script>
-  <script src="../node_mpdules/angular-message-format/angular-message-format.js"></script>
-  <script src="app.js"></script>
-  <script src="localStorage.js"></script>
-  <script src="rating.js"></script>
+  <link rel="stylesheet" href="assets/css/bootstrap-cerulean.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script src="node_modules/angular/angular.js"></script>
+  <script src="node_modules/angular-messages/angular-messages.js"></script>
+  <script src="node_modules/angular-message-format/angular-message-format.js"></script>
+  <script src="dist/app.js"></script>
 </head>
 <body class="container" ng-app="app" ng-controller="AppController as app">
 
@@ -25,96 +23,26 @@
 
 
   <!-- Delivery Info Form -->
-  <div class="row" ng-show="app.deliveryFormVisible">
-    <div class="col-md-12">
-      <form role="form" class="well" name="app.deliveryForm">
-        <a href="" class="pull-right" ng-click="app.hideDeliveryForm()">Hide</a>
-        <legend>Delivery Details</legend>
-        <div class="form-group" ng-class="{'has-error': app.deliveryForm.userName.$invalid}">
-          <label for="customerName" class="control-label">Name</label>
-          <input type="text" id="customerName" class="form-control" ng-model="app.user.name" name="userName" required ng-minlength="5">
-        </div>
-        <div ng-messages="app.deliveryForm.userName.$error">
-          <div ng-message="required" class="alert alert-warning" role="alert">You must enter a name.</div>
-          <div ng-message="minlength" class="alert alert-warning" role="alert">Your name must be at least 5 characters long.</div>
-        </div>
-        <div class="form-group" ng-class="{'has-error': app.deliveryForm.userAddress.$invalid}">
-          <label for="address" class="control-label">Address</label>
-          <input type="text" id="address" class="form-control" ng-model="app.user.address" name="userAddress" required ng-minlength="10">
-        </div>
-        <div ng-messages="app.deliveryForm.userAddress.$error">
-          <div ng-message="required" class="alert alert-warning" role="alert">You must enter an address.</div>
-          <div ng-message="minlength" class="alert alert-warning" role="alert">Your address must be at least 10 characters long.</div>
-        </div>
-      </form>
-    </div>
-  </div>
+  <fm-user-form
+      user="app.user"
+      on-save="app.saveUser(user)"
+      ng-show="app.deliveryFormVisible">
+  </fm-user-form>
+
 
 
   <!-- Delivery Info -->
-  <div class="row" ng-hide="app.deliveryFormVisible">
-    <div class="col-md-12">
-      <div class="well">
-        <a href="" class="pull-right" ng-click="app.showDeliveryForm()">Change</a>
-        <strong>Deliver to:</strong><br>
-        {{ app.user.name }}<br>
-        {{ app.user.address }}
-      </div>
-    </div>
-  </div>
+  <fm-delivery-info
+      user="app.user"
+      on-edit-user="app.showDeliveryForm()"
+      ng-hide="app.deliveryFormVisible">
+  </fm-delivery-info>
+
 
 
 
   <!-- Restaurant List -->
-  <div class="row">
-    <div class="col-md-3">
-      <form role="form" class="well" name="app.filterForm">
-        <legend>Filter Restaurants</legend>
-        <div class="form-group">
-          <label for="priceFilter" class="control-label">Price (no more than)</label>
-          <fm-rating id="priceFilter" rating="app.filters.price" glyph="gbp"></fm-rating>
-        </div>
-        <div class="form-group">
-          <label for="ratingFilter" class="control-label">Rating (at least)</label>
-          <fm-rating id="ratingFilter" rating="app.filters.rating" glyph="star"></fm-rating>
-        </div>
-      </form>
-    </div>
-    <div class="col-md-9">
-      <div class="alert alert-info" role="alert">
-      {{ app.filteredRestaurants.length, plural,
-        =0 {No restaurants found!}
-        =1 {Only one restaurant found!}
-        other {# restaurants found.}
-      }}
-      </div>
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th><a href ng-click="app.sortBy('name')">Name <span ng-class="app.getSortClass('name')"></span></a></th>
-          <th><a href ng-click="app.sortBy('price')">Price <span ng-class="app.getSortClass('price')"></span></a></th>
-          <th><a href ng-click="app.sortBy('rating')">Rating <span ng-class="app.getSortClass('rating')"></span></a></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="restaurant in app.filteredRestaurants | orderBy : app.sortProperty : app.sortDirection">
-          <td class="description">
-            <div class="media">
-              <a class="pull-left">
-                <img class="img-rounded" ng-src="../shared/img/restaurants/{{restaurant.id}}.jpg">
-              </a>
-              <div class="media-body">
-                <h4 class="media-heading">{{restaurant.name}}</h4>
-                <p>{{restaurant.description}}</p>
-              </div>
-            </div>
-          </td>
-          <td class="price">{{ restaurant.price | rating : '£' }}</td>
-          <td class="rating">{{ restaurant.rating | rating : '*' }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <fm-restaurant-list></fm-restaurant-list>
+
 </body>
 </html>
