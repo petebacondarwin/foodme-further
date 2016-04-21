@@ -7,8 +7,7 @@ displaying a filterable, sortable list of restaurants and delivery info form.
 
 ## Goals
 
-Ensure karma is installed
-Configure a karma test config
+Configure the karma test config
 Create and run initial unit tests for `AppController`
 
 ## Topics
