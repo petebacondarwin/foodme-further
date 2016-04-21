@@ -1,29 +1,18 @@
 angular.module('app', [
+  'ui.router',
   'ngMessages',
   'ngMessageFormat',
-  'app/customer/user-form',
-  'app/customer/delivery-info',
-  'app/customer/user-service',
-  'app/restaurants/restaurant-list'
+  'app/restaurants/restaurants'
 ])
 
-.controller('AppController', function(userService) {
+.config(function($locationProvider) {
+  $locationProvider.html5Mode(true);
+})
 
-  this.deliveryFormVisible = true;
-
-  this.user = userService.get();
-
-  this.showDeliveryForm = function() {
-    this.deliveryFormVisible = true;
-  };
-
-  this.hideDeliveryForm = function() {
-    this.deliveryFormVisible = false;
-  };
-
-  this.saveUser = function(user) {
-    userService.save(user);
-    this.user = user;
-    this.hideDeliveryForm();
-  };
+.config(function($stateProvider) {
+  $stateProvider
+    .state('restaurants', {
+      url: '/',
+      template: '<fm-restaurants></fm-restaurants>'
+    })
 });

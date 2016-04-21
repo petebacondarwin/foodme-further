@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Angular FoodMe</title>
+  <base href="/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="assets/css/bootstrap-cerulean.css">
@@ -10,9 +11,10 @@
   <script src="node_modules/angular/angular.js"></script>
   <script src="node_modules/angular-messages/angular-messages.js"></script>
   <script src="node_modules/angular-message-format/angular-message-format.js"></script>
+  <script src="node_modules/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="dist/app.js"></script>
 </head>
-<body class="container" ng-app="app" ng-controller="AppController as app">
+<body class="container" ng-app="app">
 
   <!-- Navigation Bar -->
   <div class="navbar navbar-default">
@@ -21,28 +23,8 @@
     </div>
   </div>
 
+  <ui-view autoscroll></ui-view>
 
-  <!-- Delivery Info Form -->
-  <fm-user-form
-      user="app.user"
-      on-save="app.saveUser(user)"
-      ng-show="app.deliveryFormVisible">
-  </fm-user-form>
-
-
-
-  <!-- Delivery Info -->
-  <fm-delivery-info
-      user="app.user"
-      on-edit-user="app.showDeliveryForm()"
-      ng-hide="app.deliveryFormVisible">
-  </fm-delivery-info>
-
-
-
-
-  <!-- Restaurant List -->
-  <fm-restaurant-list></fm-restaurant-list>
 
 </body>
 </html>

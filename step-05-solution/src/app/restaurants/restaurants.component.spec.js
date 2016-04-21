@@ -1,11 +1,11 @@
-describe('AppController controller', function() {
+describe('fmRestaurants controller', function() {
   var controller;
 
-  beforeEach(module('app'));
-  beforeEach(inject(function($controller, localStorage) {
+  beforeEach(module('app/restaurants/restaurants'));
+  beforeEach(inject(function($componentController, localStorage) {
     localStorage['foodMe/user'] =
         '{ "name": "Test User", "address": "Test Address" }';
-    controller = $controller('AppController', {});
+    controller = $componentController('fmRestaurants', {});
   }));
 
   it('should initialize controller properties', function() {
