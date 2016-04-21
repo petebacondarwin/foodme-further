@@ -1,6 +1,6 @@
 describe('fmRestaurantList controller', function() {
   var controller;
-  beforeEach(module('app'));
+  beforeEach(module('app/restaurants/restaurant-list'));
   beforeEach(inject(function($componentController) {
     controller = $componentController('fmRestaurantList');
   }));
