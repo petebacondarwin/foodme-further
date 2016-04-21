@@ -7,7 +7,9 @@
     "prebuild": "mkdir -p dist",
     "build": "babel src -o dist/app.js --ignore=**/*.spec.js --source-maps",
     "watch": "watchy -w src -- npm run build",
-    "test": "karma start"
+    "test": "karma start",
+    "pree2e": "webdriver-manager update",
+    "e2e": "protractor protractor.conf.js"
   },
   "repository": {
     "type": "git",
