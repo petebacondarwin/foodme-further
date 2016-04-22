@@ -1,6 +1,7 @@
 angular.module('app/restaurants/restaurant-list', [
   'common/rating/rating-filter',
-  'common/rating/rating-component'
+  'common/rating/rating-component',
+  'app/restaurants/restaurant-service'
 ])
 
 .component('fmRestaurantList', {
@@ -8,9 +9,10 @@ angular.module('app/restaurants/restaurant-list', [
   controller: FmRestaurantList
 });
 
-function FmRestaurantList($http, $rootScope) {
+function FmRestaurantList($http, $rootScope, restaurantService) {
   this.$http = $http;
   this.$rootScope = $rootScope;
+  this.restaurantService = restaurantService;
   this.sortProperty = 'name';
   this.sortDirection = false;
   this.filters = {
@@ -21,9 +23,8 @@ function FmRestaurantList($http, $rootScope) {
 
 FmRestaurantList.prototype.$onInit = function() {
   var _this = this;
-  var url = 'assets/data/restaurants.json';
-  this.$http.get(url).then(function(response) {
-    _this.restaurants = response.data;
+  this.restaurantService.load().then(function(restaurants) {
+    _this.restaurants = restaurants;
   });
 
   var filterRestaurants = function() {
