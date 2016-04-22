@@ -1,4 +1,4 @@
-# Step 11 - Create restaurants service
+# Step 12 - add detailed menu view
 
 ## Where are we?
 
@@ -7,146 +7,121 @@ with unit tests and e2e tests; and componentized routing
 
 ## Goals
 
-* Refactor restaurant data management into a service
+* Add a new view for a single restaurant showing its menu
 
 ## Topics
 
+* $routeParams
 * route resolves
 
 ## Tasks
 
-* Create a `restaurantListPromise` service in the `restaurants` module
+* Add a new restaurant menu route, with a route parameter `:id`
 
 ```js
-.factory('restaurantListPromise', function($http) {
-
-  // var url = 'https://foodme.firebaseio.com/.json'; // CORS enabled server
-  var url = '../shared/data/restaurants.json'; // Local webserver
-
-  return $http.get(url).then(function(response) {
-    return response.data;
-  });
-
-})
-```
-
-* Add a resolve to the `/restaurants` route to inject the list of restaurants into the controller
-
-```js
-.config(function($routeProvider) {
-  $routeProvider
-    .when('/restaurants', {
-      templateUrl: 'components/restaurants',
-      controller: 'RestaurantsController as component',
-      resolve: {
-        restaurants: 'restaurantListPromise'
-      }
-    });
-})
-```
-
-* Update the `RestaurantsController` to use this injected value
-
-```js
-.controller('RestaurantsController', function(restaurants, $rootScope) {
-
-  var that = this;
-
-  ...
-
-  var filterRestaurants = function() {
-    that.filteredRestaurants = [];
-    angular.forEach(restaurants, function(restaurant) {
-      if ( ( !that.filters.rating || restaurant.rating >= that.filters.rating ) &&
-           ( !that.filters.price || restaurant.price <= that.filters.price ) ) {
-        that.filteredRestaurants.push(restaurant);
-      }
-    });
-  };
-
-  $rootScope.$watchGroup([
-      function() { return that.filters.price; },
-      function() { return that.filters.rating; }
-    ], filterRestaurants);
+.when('/restaurants/:id', {
+  templateUrl: 'components/restaurants/menu.html',
+  controller: 'MenuController as component',
+  resolve: {
+    restaurants: 'restaurantListPromise'
+  }
 });
 ```
 
-* Move the unit tests from the `RestaurantController` into `restaurantListPromise`
+* Create a new view for this route at `components/restaurants/menu.html`
+
+```html
+<div class="col-md-12">
+  <div class="row fm-restaurant">
+    <div class="col-md-2">
+      <img ng-src="../shared/img/restaurants/{{component.restaurant.id}}.jpg" class="img-rounded">
+    </div>
+
+    <div class="col-md-10">
+      <h3>{{component.restaurant.name}}</h3>
+
+      <div class="row">
+        <div class="col-md-2">
+          <div>{{component.restaurant.address}}</div>
+          <div ng-bind-html="component.restaurant.rating | rating : 'star'"></div>
+          <div ng-bind-html="component.restaurant.price | rating : 'gbp'"></div>
+        </div>
+        <div class="col-md-4">
+          <div>{{component.restaurant.description}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="fm-panel fm-menu-list">
+        <div class="fm-heading">Menu</div>
+
+        <div class="fm-content">
+          <ul>
+            <li ng-repeat="menuItem in component.restaurant.menuItems">
+              <a href>
+                <span>{{menuItem.name}}</span>
+                <span>{{menuItem.price | currency}}</span>
+                <i class="glyphicon glyphicon-plus"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="fm-panel fm-cart">
+        <div class="fm-heading">Your order</div>
+        <div class="fm-content">
+          <div class="fm-restaurant">{{ component.restaurant.name }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+* Create a new controller for this route, which uses the resolved restaurant data
 
 ```js
-describe('restaurantListPromise', function() {
-
-  beforeEach(inject(function($httpBackend) {
-    $httpBackend.when('GET', '../shared/data/restaurants.json').respond([
-      { id: 'test1', price: 1, rating: 3 },
-      { id: 'test2', price: 2, rating: 4 },
-      { id: 'test3', price: 3, rating: 5 }
-    ]);
-  }));
-
-  it('should return a promise to restaurant data', inject(function($httpBackend, restaurantListPromise) {
-    var restaurants;
-
-    restaurantListPromise.then(function(data) {
-      restaurants = data;
-    });
-
-    $httpBackend.flush();
-
-    expect(restaurants).toEqual([
-      { id: 'test1', price: 1, rating: 3 },
-      { id: 'test2', price: 2, rating: 4 },
-      { id: 'test3', price: 3, rating: 5 }
-    ]);
-  }));
+.controller('MenuController', function(restaurants, $routeParams, $location) {
+  var restaurantId = $routeParams.id;
+  for(var i=0; i<restaurants.length; i++) {
+    if (restaurants[i].id == restaurantId) {
+      this.restaurant = restaurants[i];
+      break;
+    }
+  }
+  if (!this.restaurant) {
+    console.log('missing restaurant', restaurantId);
+    $location.path('/');
+  }
 });
 ```
 
-* Inject mock restaurant data directly into the `RestaurantsController` under test
+* Update the restaurant list view to link each restaurant to its menu
 
-```js
-describe('RestaurantsController', function() {
-
-  var controller, restaurants;
-
-  beforeEach(inject(function($controller) {
-    restaurants = [
-      { id: 'test1', price: 1, rating: 3 },
-      { id: 'test2', price: 2, rating: 4 },
-      { id: 'test3', price: 3, rating: 5 }
-    ];
-    controller = $controller('RestaurantsController', { restaurants });
-  }));
-
-  ...
-
-  describe('filteredRestaurants', function() {
-
-    it('should initially contain the full list of restaurants', inject(function($rootScope) {
-      $rootScope.$digest();
-      expect(controller.filteredRestaurants).toEqual([
-        { id: 'test1', price: 1, rating: 3 },
-        { id: 'test2', price: 2, rating: 4 },
-        { id: 'test3', price: 3, rating: 5 }
-      ]);
-    }));
-
-    ...
-  });
-});
-```
-
-* Check that the unit tests still pass
-
-```bash
-$ karma start --single-run
-```
-
-* Check that the e2e tests still pass
-
-```bash
-$ protractor protractor.conf.js
+```html
+<td class="description">
+  <div class="media">
+    <a class="pull-left" href="#/restaurants/{{restaurant.id}}">
+      <img class="img-rounded" ng-src="../shared/img/restaurants/{{restaurant.id}}.jpg">
+    </a>
+    <div class="media-body">
+      <h4 class="media-heading">
+        <a href="#/restaurants/{{restaurant.id}}">{{restaurant.name}}</a>
+      </h4>
+      <p>{{restaurant.description}}</p>
+    </div>
+  </div>
+</td>
 ```
 
 ## Extras
 
+* Write unit tests for the `MenuController`
+* Write new e2e test that demonstrate navigating to a menu

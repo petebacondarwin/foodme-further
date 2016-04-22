@@ -2,14 +2,14 @@ angular.module('shoppingCart', ['localStorage'])
 
 .value('alert', window.alert)
 
-.factory('shoppingCart', ['localStorageBinding', function(localStorageBinding) {
+.factory('shoppingCart', function(localStorageBinding) {
   return localStorageBinding('fmShoppingCart', {
     items: [],
     restaurant: {}
   });
-}])
+})
 
-.controller('ShoppingCartController', ['shoppingCart', 'alert', function(shoppingCart, alert) {
+.controller('ShoppingCartController', function(shoppingCart, alert) {
   this.cart = shoppingCart;
 
   this.items = function() {
@@ -69,4 +69,4 @@ angular.module('shoppingCart', ['localStorage'])
     this.cart.items = [];
     this.cart.restaurant = {};
   };
-}]);
+});

@@ -8,6 +8,13 @@ angular.module('restaurants', ['ngRoute'])
       resolve: {
         restaurants: 'restaurantListPromise'
       }
+    })
+    .when('/restaurants/:id', {
+      templateUrl: 'components/restaurants/menu.html',
+      controller: 'MenuController as component',
+      resolve: {
+        restaurants: 'restaurantListPromise'
+      }
     });
 })
 
@@ -64,4 +71,19 @@ angular.module('restaurants', ['ngRoute'])
       function() { return that.filters.price; },
       function() { return that.filters.rating; }
     ], filterRestaurants);
+})
+
+
+.controller('MenuController', function(restaurants, $routeParams, $location) {
+  var restaurantId = $routeParams.id;
+  for(var i=0; i<restaurants.length; i++) {
+    if (restaurants[i].id == restaurantId) {
+      this.restaurant = restaurants[i];
+      break;
+    }
+  }
+  if (!this.restaurant) {
+    console.log('missing restaurant', restaurantId);
+    $location.path('/');
+  }
 });

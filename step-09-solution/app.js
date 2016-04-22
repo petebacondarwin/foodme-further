@@ -1,4 +1,4 @@
-angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute',
+angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
                        'localStorage', 'rating', 'restaurants'])
 
 
@@ -31,6 +31,15 @@ angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute',
 
   this.hideDeliveryForm = function() {
     this.deliveryFormVisible = false;
+  };
+
+})
+
+
+.controller('NavigationController', function($location) {
+
+  this.routeIs = function(routeName) {
+    return $location.path() === routeName;
   };
 
 })

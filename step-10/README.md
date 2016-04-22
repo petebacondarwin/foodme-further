@@ -1,4 +1,4 @@
-# Step 10 - add animated navigation indicators
+# Step 11 - Create restaurants service
 
 ## Where are we?
 
@@ -7,47 +7,132 @@ with unit tests and e2e tests; and componentized routing
 
 ## Goals
 
-* Add CSS classes to show which is the currently selected route
-* Use ngAnimate to animate these class changes with CSS transitions
+* Refactor restaurant data management into a service
 
 ## Topics
 
-* ngClass
-* ngAnimate
-* CSS transitions
+* route resolves
 
 ## Tasks
 
-* Create a `NavigationController` in app.js, which provides `routeIs()` helper
+* Create a `restaurantListPromise` service in the `restaurants` module
 
 ```js
-.controller('NavigationController', function($location) {
+.factory('restaurantListPromise', function($http) {
 
-  this.routeIs = function(routeName) {
-    return $location.path() === routeName;
+  // var url = 'https://foodme.firebaseio.com/.json'; // CORS enabled server
+  var url = '../shared/data/restaurants.json'; // Local webserver
+
+  return $http.get(url).then(function(response) {
+    return response.data;
+  });
+
+})
+```
+
+* Add a resolve to the `/restaurants` route to inject the list of restaurants into the controller
+
+```js
+.config(function($routeProvider) {
+  $routeProvider
+    .when('/restaurants', {
+      templateUrl: 'components/restaurants',
+      controller: 'RestaurantsController as component',
+      resolve: {
+        restaurants: 'restaurantListPromise'
+      }
+    });
+})
+```
+
+* Update the `RestaurantsController` to use this injected value
+
+```js
+.controller('RestaurantsController', function(restaurants, $rootScope) {
+
+  var that = this;
+
+  ...
+
+  var filterRestaurants = function() {
+    that.filteredRestaurants = [];
+    angular.forEach(restaurants, function(restaurant) {
+      if ( ( !that.filters.rating || restaurant.rating >= that.filters.rating ) &&
+           ( !that.filters.price || restaurant.price <= that.filters.price ) ) {
+        that.filteredRestaurants.push(restaurant);
+      }
+    });
   };
 
+  $rootScope.$watchGroup([
+      function() { return that.filters.price; },
+      function() { return that.filters.rating; }
+    ], filterRestaurants);
 });
 ```
 
-* Add unit tests for this controller to app.spec.js
+* Move the unit tests from the `RestaurantController` into `restaurantListPromise`
 
 ```js
-describe('NavigationController', function() {
-  var controller;
+describe('restaurantListPromise', function() {
 
-  beforeEach(module('app'));
-  beforeEach(inject(function($controller) {
-    controller = $controller('NavigationController', {});
+  beforeEach(inject(function($httpBackend) {
+    $httpBackend.when('GET', '../shared/data/restaurants.json').respond([
+      { id: 'test1', price: 1, rating: 3 },
+      { id: 'test2', price: 2, rating: 4 },
+      { id: 'test3', price: 3, rating: 5 }
+    ]);
   }));
 
-  describe('routeIs', function() {
-    it('should return true if the current route matches the parameter', inject(function($location) {
-      $location.path('/test-route');
-      expect(controller.routeIs('/other-route')).toBe(false);
-      expect(controller.routeIs('/test-route')).toBe(true);
+  it('should return a promise to restaurant data', inject(function($httpBackend, restaurantListPromise) {
+    var restaurants;
+
+    restaurantListPromise.then(function(data) {
+      restaurants = data;
+    });
+
+    $httpBackend.flush();
+
+    expect(restaurants).toEqual([
+      { id: 'test1', price: 1, rating: 3 },
+      { id: 'test2', price: 2, rating: 4 },
+      { id: 'test3', price: 3, rating: 5 }
+    ]);
+  }));
+});
+```
+
+* Inject mock restaurant data directly into the `RestaurantsController` under test
+
+```js
+describe('RestaurantsController', function() {
+
+  var controller, restaurants;
+
+  beforeEach(inject(function($controller) {
+    restaurants = [
+      { id: 'test1', price: 1, rating: 3 },
+      { id: 'test2', price: 2, rating: 4 },
+      { id: 'test3', price: 3, rating: 5 }
+    ];
+    controller = $controller('RestaurantsController', { restaurants });
+  }));
+
+  ...
+
+  describe('filteredRestaurants', function() {
+
+    it('should initially contain the full list of restaurants', inject(function($rootScope) {
+      $rootScope.$digest();
+      expect(controller.filteredRestaurants).toEqual([
+        { id: 'test1', price: 1, rating: 3 },
+        { id: 'test2', price: 2, rating: 4 },
+        { id: 'test3', price: 3, rating: 5 }
+      ]);
     }));
-  })
+
+    ...
+  });
 });
 ```
 
@@ -57,78 +142,11 @@ describe('NavigationController', function() {
 $ karma start --single-run
 ```
 
-
-* Add this controller to the navigation bar using `ng-controller`
-
-```html
-  <!-- Navigation Bar -->
-  <div class="navbar navbar-default" ng-controller="NavigationController as nav">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#/">FoodMe</a>
-      </div>
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li ng-class="{active: nav.routeIs('/restaurants')}"><a href="#/">Home</a></li>
-          <li ng-class="{active: nav.routeIs('/how-it-works')}"><a href="#/how-it-works">How it works</a></li>
-          <li ng-class="{active: nav.routeIs('/about-us')}"><a href="#/about-us">Who we are</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li ng-class="{active: nav.routeIs('/help')}"><a href="#/help">Help</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-```
-
-* Load `angular-animate.js` in index.html
-
-```html
-  <script src="../node_modules/angular-animate/angular-animate.js"></script>
-```
-
-* Add `ngAnimate` as a dependency of the `app` module
-
-```js
-angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
-                       'localStorage', 'rating', 'restaurants'])
-```
-
-* Note that the shared/css/app.css file has relevant CSS transition styles
-
-```css
-.navbar-nav > li, .navbar-nav > li > a {
-  transition: 0.5s ease-out all;
-}
-
-.navbar-nav > li.active-add-active a {
-  background-color: white !important;
-}
-```
-
-* Add `angular-animate.js` to the Karma config
-
-```js
-files: [
-  '../node_modules/angular/angular.js',
-  '../node_modules/angular-messages/angular-messages.js',
-  '../node_modules/angular-message-format/angular-message-format.js',
-  '../node_modules/angular-route/angular-route.js',
-  '../node_modules/angular-animate/angular-animate.js',
-  '../node_modules/angular-mocks/angular-mocks.js',
-  '*.js',
-  'components/*/*.js'
-],
-```
-
-* Check that the unit tests still pass
+* Check that the e2e tests still pass
 
 ```bash
-$ karma start --single-run
+$ protractor protractor.conf.js
 ```
-
 
 ## Extras
 
-* Define your own transitions for the navigation
-* Define CSS classes to animate the restaurant list changing as it is filtered

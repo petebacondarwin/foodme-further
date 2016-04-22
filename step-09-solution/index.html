@@ -11,6 +11,7 @@
   <script src="../node_modules/angular-messages/angular-messages.js"></script>
   <script src="../node_modules/angular-message-format/angular-message-format.js"></script>
   <script src="../node_modules/angular-route/angular-route.js"></script>
+  <script src="../node_modules/angular-animate/angular-animate.js"></script>
   <script src="app.js"></script>
   <script src="localStorage.js"></script>
   <script src="rating.js"></script>
@@ -19,20 +20,20 @@
 <body class="container" ng-app="app" ng-controller="AppController as app">
 
   <!-- Navigation Bar -->
-  <div class="navbar navbar-default">
+  <div class="navbar navbar-default" ng-controller="NavigationController as nav">
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="#/">FoodMe</a>
       </div>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li><a href="#/">Home</a></li>
-          <li><a href="#/how-it-works">How it works</a></li>
-          <li><a href="#/about-us">Who we are</a></li>
+          <li ng-class="{active: nav.routeIs('/restaurants')}"><a href="#/">Home</a></li>
+          <li ng-class="{active: nav.routeIs('/how-it-works')}"><a href="#/how-it-works">How it works</a></li>
+          <li ng-class="{active: nav.routeIs('/about-us')}"><a href="#/about-us">Who we are</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#/help">Help</a></li>
+          <li ng-class="{active: nav.routeIs('/help')}"><a href="#/help">Help</a></li>
         </ul>
       </div>
     </div>

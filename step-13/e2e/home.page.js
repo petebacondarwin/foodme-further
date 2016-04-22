@@ -5,21 +5,21 @@ HomePage.prototype = {
   },
 
   setUserName: function(name) {
-    var e = element(by.model('app.user.name'));
+    var e = element(by.model('directive.user.name'));
     e.clear();
     e.sendKeys(name);
   },
 
   getDisplayedUserName: function() {
-    return element(by.binding('app.user.name'));
+    return element(by.binding('directive.user.name'));
   },
 
   hideDeliveryForm: function() {
-    element(by.css('a[ng-click="app.hideDeliveryForm()"]')).click();
+    element(by.css('a[ng-click="directive.hideDeliveryForm()"]')).click();
   },
 
   showDeliveryForm: function() {
-    element(by.css('a[ng-click="app.showDeliveryForm()"]')).click();
+    element(by.css('a[ng-click="directive.showDeliveryForm()"]')).click();
   },
 
   getRestaurantList: function(column) {

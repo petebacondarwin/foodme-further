@@ -4,20 +4,27 @@ angular.module('restaurants', ['ngRoute'])
   $routeProvider
     .when('/restaurants', {
       templateUrl: 'components/restaurants',
-      controller: 'RestaurantsController as component'
+      controller: 'RestaurantsController as component',
+      resolve: {
+        restaurants: 'restaurantListPromise'
+      }
     });
 })
 
-.controller('RestaurantsController', function($http, $rootScope) {
+.factory('restaurantListPromise', function($http) {
 
-  var that = this;
   // var url = 'https://foodme.firebaseio.com/.json'; // CORS enabled server
   var url = '../shared/data/restaurants.json'; // Local webserver
 
-  $http.get(url).then(function(response) {
-    that.restaurants = response.data;
+  return $http.get(url).then(function(response) {
+    return response.data;
   });
 
+})
+
+.controller('RestaurantsController', function(restaurants, $rootScope) {
+
+  var that = this;
 
   this.sortProperty = 'name';
   this.sortDirection = false;
@@ -42,9 +49,10 @@ angular.module('restaurants', ['ngRoute'])
     rating: null
   };
 
+
   var filterRestaurants = function() {
     that.filteredRestaurants = [];
-    angular.forEach(that.restaurants, function(restaurant) {
+    angular.forEach(restaurants, function(restaurant) {
       if ( ( !that.filters.rating || restaurant.rating >= that.filters.rating ) &&
            ( !that.filters.price || restaurant.price <= that.filters.price ) ) {
         that.filteredRestaurants.push(restaurant);
@@ -54,7 +62,6 @@ angular.module('restaurants', ['ngRoute'])
 
   $rootScope.$watchGroup([
       function() { return that.filters.price; },
-      function() { return that.filters.rating; },
-      function() { return that.restaurants; }
+      function() { return that.filters.rating; }
     ], filterRestaurants);
 });

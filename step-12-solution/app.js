@@ -1,5 +1,5 @@
 angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
-                       'localStorage', 'rating', 'restaurants'])
+                       'localStorage', 'rating', 'restaurants', 'fmDeliverTo'])
 
 
 .config(function($routeProvider) {
@@ -18,21 +18,10 @@ angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
 
 .controller('AppController', function(localStorageBinding) {
 
-  this.deliveryFormVisible = true;
-
   this.user = localStorageBinding('foodMe/user', {
     name: 'Jo Bloggs',
     address: '123, Some Place, Some Where'
   });
-
-  this.showDeliveryForm = function() {
-    this.deliveryFormVisible = true;
-  };
-
-  this.hideDeliveryForm = function() {
-    this.deliveryFormVisible = false;
-  };
-
 })
 
 

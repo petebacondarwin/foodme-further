@@ -1,5 +1,6 @@
 angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
-                       'localStorage', 'rating', 'restaurants', 'fmDeliverTo'])
+                       'localStorage', 'rating', 'restaurants', 'fmDeliverTo',
+                       'shoppingCart'])
 
 
 .config(function($routeProvider) {

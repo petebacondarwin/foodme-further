@@ -3,7 +3,7 @@ angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
                        'shoppingCart'])
 
 
-.config(function($routeProvider) {
+.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/about-us', {
       templateUrl: 'components/about-us'
@@ -15,24 +15,24 @@ angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
       templateUrl: 'components/how-it-works'
     })
     .otherwise('/restaurants');
-})
+}])
 
-.controller('AppController', function(localStorageBinding) {
+.controller('AppController', ['localStorageBinding', function(localStorageBinding) {
 
   this.user = localStorageBinding('foodMe/user', {
     name: 'Jo Bloggs',
     address: '123, Some Place, Some Where'
   });
-})
+}])
 
 
-.controller('NavigationController', function($location) {
+.controller('NavigationController', ['$location', function($location) {
 
   this.routeIs = function(routeName) {
     return $location.path() === routeName;
   };
 
-})
+}])
 
 
 .filter('rating', function() {

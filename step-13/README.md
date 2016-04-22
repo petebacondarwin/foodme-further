@@ -1,260 +1,169 @@
-# Step 13 - create custom component directive
+# Step 14 - add Shopping Cart functionality
 
 ## Where are we?
 
 An Angular application running from a local webserver;
-with unit tests and e2e tests; and componentized routing
+with unit tests and e2e tests; reusable directives and componentized routing
 
 ## Goals
 
-* Refactor the delivery info form and display box into a reusable `fmDeliverTo` directive
-* Use `fmDeliverTo` in different places in the restaurant list and menu views
+* Provide a Shopping Cart facility to store items from the menu
 
 ## Topics
 
-* Directives
-* Isolated Scope
-* Testing Directives
-* karma-ng-html2js-preprocessor
+* Services
 
 ## Tasks
 
-* Define `fmDeliverTo` module with `fmDeliverTo` directive in `fmDeliverTo.js`
+* Create a `shoppingCart` module, which depends upon `localStorage`
 
 ```js
-angular.module('fmDeliverTo', [])
-
-.directive('fmDeliverTo', function() {
-  return {
-    restrict: 'E',
-    templateUrl: 'fmDeliverTo.template.html',
-    controller: 'FmDeliverToController as directive',
-    bindToController: {
-      user: '=deliverTo'
-    },
-    scope: {}
-  };
-});
+angular.module('shoppingCart', ['localStorage'])
 ```
 
-* Move the fmDeliverTo logic from the `AppController` into a new `FmDeliverToController`
+* Load the `shoppingCart` module in index.html
+
+```html
+  <script src="shoppingCart.js"></script>
+```
+
+* Add the `shoppingCart` as a dependency of the `app` module
 
 ```js
-.controller('FmDeliverToController', function() {
+angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
+                       'localStorage', 'rating', 'restaurants', 'fmDeliverTo',
+                       'shoppingCart'])
+```
 
-  this.deliveryFormVisible = true;
+* Create an `alert` service to wrap the browser's `alert` function for easier testing
 
-  this.showDeliveryForm = function() {
-    this.deliveryFormVisible = true;
-  };
+```js
+.value('alert', window.alert)
+```
 
-  this.hideDeliveryForm = function() {
-    this.deliveryFormVisible = false;
-  };
+* Create a `shoppingCart` service that stores the cart info in `localStorage`
+
+```js
+.factory('shoppingCart', function(localStorageBinding) {
+  return localStorageBinding('fmShoppingCart', {
+    items: [],
+    restaurant: {}
+  });
 })
 ```
 
-* Move the fmDeliverTo HTML from the `index.html` file to the `fmDeliverTo.template.html` file
-
-```html
-<!-- Delivery Info Form -->
-<div class="row delivery-info-form" ng-show="directive.deliveryFormVisible">
-  <div class="col-md-12">
-    <form role="form" class="well" name="directive.deliveryForm">
-      <a href="" class="pull-right" ng-click="directive.hideDeliveryForm()">Hide</a>
-      <legend>Delivery Details</legend>
-      <div class="form-group" ng-class="{'has-error': directive.deliveryForm.userName.$invalid}">
-        <label for="customerName" class="control-label">Name</label>
-        <input type="text" id="customerName" class="form-control" ng-model="directive.user.name" name="userName" required ng-minlength="5">
-      </div>
-      <div ng-messages="directive.deliveryForm.userName.$error">
-        <div ng-message="required" class="alert alert-warning" role="alert">You must enter a name.</div>
-        <div ng-message="minlength" class="alert alert-warning" role="alert">Your name must be at least 5 characters long.</div>
-      </div>
-      <div class="form-group" ng-class="{'has-error': directive.deliveryForm.userAddress.$invalid}">
-        <label for="address" class="control-label">Address</label>
-        <input type="text" id="address" class="form-control" ng-model="directive.user.address" name="userAddressInput" required ng-minlength="10">
-      </div>
-      <div ng-messages="directive.deliveryForm.userAddress.$error">
-        <div ng-message="required" class="alert alert-warning" role="alert">You must enter an address.</div>
-        <div ng-message="minlength" class="alert alert-warning" role="alert">Your address must be at least 10 characters long.</div>
-      </div>
-    </form>
-  </div>
-</div>
-
-
-<!-- Delivery Info -->
-<div class="row delivery-info-box" ng-hide="directive.deliveryFormVisible">
-  <div class="col-md-12">
-    <div class="well">
-      <a href="" class="pull-right" ng-click="directive.showDeliveryForm()">Change</a>
-      <strong>Deliver to:</strong><br>
-      <span>{{ directive.user.name }}</span><br>
-      <span>{{ directive.user.address }}</span>
-    </div>
-  </div>
-</div>
-```
-
-* Move the unit test logic from the `AppController` spec to the `FmDeliverToController` spec
+* Create a `ShoppingCartController` that exposes the `shoppingCart` and helper methods
 
 ```js
-describe('fmDeliverTo module', function() {
+.controller('ShoppingCartController', function(shoppingCart, alert) {
+  this.cart = shoppingCart;
 
-  beforeEach(module('fmDeliverTo'));
+  this.items = function() {
+    return this.cart.items;
+  };
 
-  describe('FmDeliverToController', function() {
+  this.restaurant = function() {
+    return this.cart.restaurant;
+  };
 
-    beforeEach(inject(function($controller) {
-      controller = $controller('FmDeliverToController', {});
-    }));
+  this.add = function(choice, restaurant) {
+    if ( !this.cart.restaurant.id ) {
+      this.cart.restaurant = restaurant;
+    }
 
-    it('should initialize controller properties', function() {
-      expect(controller.deliveryFormVisible).toBe(true);
+    if ( this.cart.restaurant.id !== restaurant.id ) {
+      alert('You cannot mix items from different restaurant - clear the shopping cart first.');
+      return;
+    }
+
+    angular.forEach(this.cart.items, function(item) {
+      if (choice && choice.name === item.name) {
+        item.amount += 1;
+        choice = null;
+      }
     });
 
-    describe('showDeliveryForm', function() {
-      it('should set deliveryFormVisible to true', function() {
-        controller.deliveryFormVisible = null;
-        controller.showDeliveryForm();
-        expect(controller.deliveryFormVisible).toBe(true);
+    if (choice) {
+      this.cart.items.push({
+        name: choice.name,
+        price: choice.price,
+        amount: 1
       });
-    });
+    }
+  };
 
-    describe('hideDeliveryForm', function() {
-      it('should set deliveryFormVisible to false', function() {
-        controller.deliveryFormVisible = null;
-        controller.hideDeliveryForm();
-        expect(controller.deliveryFormVisible).toBe(false);
-      });
+  this.remove = function(cartItem) {
+    var index = this.cart.items.indexOf(cartItem);
+    if ( index !== -1 ) {
+      this.cart.items.splice(index, 1);
+    }
+
+    if (this.cart.items.length === 0) {
+      this.cart.restaurant = {};
+    }
+  };
+
+  this.total = function() {
+    var sum = 0;
+    angular.forEach(this.cart.items, function(item) {
+      sum += Number(item.price * item.amount);
     });
-  });
+    return sum;
+  };
+
+  this.reset = function() {
+    this.cart.items = [];
+    this.cart.restaurant = {};
+  };
 });
 ```
 
-* Install the Karma HTML to JavaScript preprocessor to help with testing the directive
-
-```bash
-npm install karma-ng-html2js-preprocessor --save-dev
-```
-
-* Update the karma config for this HTML to JavaScript preprocessor
-
-```js
-preprocessors: {
-  '**/*.template.html': ['ng-html2js']
-},
-
-
-ngHtml2JsPreprocessor: {
-},
-```
-
-* Write unit tests for the fmDeliverTo directive, loading the module containing the template
-
-```js
-describe('fmDeliverTo module', function() {
-
-  beforeEach(module('fmDeliverTo'));
-
-  ...
-
-  describe('fmDeliverTo directive', function() {
-    var scope, element;
-
-    beforeEach(module('fmDeliverTo.template.html'));
-
-    beforeEach(inject(function($compile, $rootScope) {
-      $rootScope.testUser = {
-        name: 'Test Name',
-        address: 'Test Address'
-      };
-      scope = $rootScope;
-      element = $compile('<fm-deliver-to deliver-to="testUser"></fm-deliver-to>')($rootScope);
-      $rootScope.$digest();
-    }));
-
-
-    it('should bind the user info to the form inputs', function() {
-      var userNameInput = element[0].querySelector('input[ng-model="directive.user.name"]');
-      expect(userNameInput.value).toEqual('Test Name');
-
-      var userAddressInput = element[0].querySelector('input[ng-model="directive.user.address"]');
-      expect(userAddressInput.value).toEqual('Test Address');
-    });
-
-
-    it('should bind the user info display boxes', function() {
-      var displayBox = element[0].querySelector('.delivery-info-box');
-      expect(displayBox.textContent).toContain('Test Name');
-      expect(displayBox.textContent).toContain('Test Address');
-    });
-
-
-    it('should update the model given by the `deliver-to` expression when the inputs are changed', function() {
-      var userNameInput = angular.element(element[0].querySelector('input[ng-model="directive.user.name"]'));
-      userNameInput.val('Other Name');
-      userNameInput.triggerHandler('change');
-      expect(scope.testUser.name).toEqual('Other Name');
-
-      var userAddressInput = angular.element(element[0].querySelector('input[ng-model="directive.user.address"]'));
-      userAddressInput.val('Other Name');
-      userAddressInput.triggerHandler('change');
-      expect(scope.testUser.address).toEqual('Other Name');
-    });
-
-  });
-});
-```
-
-* Check that the unit tests still pass
-
-```bash
-$ karma start --single-run
-```
-
-* Use the `fmDeliverTo` directive in the left side bar of the restaurant list view
+* Attach the `ShoppingCartController` to the menu view using `ng-controller`
 
 ```html
-<!-- Restaurant List -->
-<div class="col-md-3">
-  <fm-deliver-to deliver-to="app.user"></fm-deliver-to>
-
-  <form role="form" class="well" name="component.filterForm">
-    <legend>Filter Restaurants</legend>
-...
+  <div class="row" ng-controller="ShoppingCartController as shoppingCart">
+    <div class="col-md-8">
+      <div class="fm-panel fm-menu-list">
+        <div class="fm-heading">Menu</div>
+        ...
 ```
 
-* Use the `fmDeliverTo` directive in the right side bar of the menu view
+* Add a new item to the cart from the menu items when the plus sign is clicked
 
 ```html
-<div class="col-md-4">
-  <fm-deliver-to deliver-to="app.user"></fm-deliver-to>
+<li ng-repeat="menuItem in component.restaurant.menuItems">
+  <a href>
+    <span>{{menuItem.name}}</span>
+    <span>{{menuItem.price | currency}}</span>
+    <i class="glyphicon glyphicon-plus" ng-click="shoppingCart.add(menuItem, component.restaurant)"></i>
+  </a>
+</li>
+```
 
-  <div class="fm-panel fm-cart">
-    <div class="fm-heading">Your order</div>
-    <div class="fm-content">
-      <div class="fm-restaurant">{{ component.restaurant.name }}</div>
+* Display the shopping cart items and total in the side panel, with option to remove items by clicking
 
-    </div>
+```html
+<div class="fm-content">
+  <div class="fm-restaurant">{{ shoppingCart.restaurant().name }}</div>
+
+  <ul class="list-unstyled">
+    <li ng-repeat="cartItem in shoppingCart.items()">
+      <a ng-click="shoppingCart.remove(cartItem)">
+        <i class="glyphicon glyphicon-remove"></i>
+      </a>
+      {{cartItem.amount}} &times; {{ cartItem.name }}
+    </li>
+  </ul>
+
+  <div class="pull-right">
+    <a href class="btn btn-primary">Checkout</a>
   </div>
+  <div class="fm-total">Total: {{shoppingCart.total() | currency}}</div>
+
 </div>
 ```
-
-* Update the `HomePage` Protractor page object for the new user bindings
-
-Rename the `app.user.name`, `app.hideDeliveryForm` and `app.showDeliveryForm` expressions
-with `directive.user.name`, `directive.hideDeliveryForm` and `directive.showDeliveryForm` expressions
-respectively.
-
-* Check that the e2e tests still pass
-
-```bash
-$ protractor protractor.conf.js
-```
-
 
 ## Extras
 
-* Update the e2e test that demonstrates navigating to a menu, if you wrote one
+* Write unit tests for the `ShoppingCartController` (mocking `alert`)
+* Write e2e tests for adding items to the cart

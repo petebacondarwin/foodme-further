@@ -21,7 +21,7 @@
   </div>
 
 
-  <div class="row">
+  <div class="row" ng-controller="ShoppingCartController as shoppingCart">
     <div class="col-md-8">
       <div class="fm-panel fm-menu-list">
         <div class="fm-heading">Menu</div>
@@ -33,7 +33,7 @@
               <a href>
                 <span>{{menuItem.name}}</span>
                 <span>{{menuItem.price | currency}}</span>
-                <i class="glyphicon glyphicon-plus"></i>
+                <i class="glyphicon glyphicon-plus" ng-click="shoppingCart.add(menuItem, component.restaurant)"></i>
               </a>
             </li>
 
@@ -48,7 +48,21 @@
       <div class="fm-panel fm-cart">
         <div class="fm-heading">Your order</div>
         <div class="fm-content">
-          <div class="fm-restaurant">{{ component.restaurant.name }}</div>
+          <div class="fm-restaurant">{{ shoppingCart.restaurant().name }}</div>
+
+          <ul class="list-unstyled">
+            <li ng-repeat="cartItem in shoppingCart.items()">
+              <a ng-click="shoppingCart.remove(cartItem)">
+                <i class="glyphicon glyphicon-remove"></i>
+              </a>
+              {{cartItem.amount}} &times; {{ cartItem.name }}
+            </li>
+          </ul>
+
+          <div class="pull-right">
+            <a href class="btn btn-primary">Checkout</a>
+          </div>
+          <div class="fm-total">Total: {{shoppingCart.total() | currency}}</div>
 
         </div>
       </div>

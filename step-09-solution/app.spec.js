@@ -33,6 +33,24 @@ describe('AppController controller', function() {
 });
 
 
+describe('NavigationController', function() {
+  var controller;
+
+  beforeEach(module('app'));
+  beforeEach(inject(function($controller) {
+    controller = $controller('NavigationController', {});
+  }));
+
+  describe('routeIs', function() {
+    it('should return true if the current route matches the parameter', inject(function($location) {
+      $location.path('/test-route');
+      expect(controller.routeIs('/other-route')).toBe(false);
+      expect(controller.routeIs('/test-route')).toBe(true);
+    }));
+  })
+});
+
+
 describe('rating filter', function() {
 
   beforeEach(module('app'));

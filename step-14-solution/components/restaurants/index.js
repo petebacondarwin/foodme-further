@@ -1,6 +1,6 @@
 angular.module('restaurants', ['ngRoute'])
 
-.config(function($routeProvider) {
+.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/restaurants', {
       templateUrl: 'components/restaurants',
@@ -16,9 +16,9 @@ angular.module('restaurants', ['ngRoute'])
         restaurants: 'restaurantListPromise'
       }
     });
-})
+}])
 
-.factory('restaurantListPromise', function($http) {
+.factory('restaurantListPromise', ['$http', function($http) {
 
   // var url = 'https://foodme.firebaseio.com/.json'; // CORS enabled server
   var url = '../shared/data/restaurants.json'; // Local webserver
@@ -27,9 +27,9 @@ angular.module('restaurants', ['ngRoute'])
     return response.data;
   });
 
-})
+}])
 
-.controller('RestaurantsController', function(restaurants, $rootScope) {
+.controller('RestaurantsController', ['restaurants', '$rootScope', function(restaurants, $rootScope) {
 
   var that = this;
 
@@ -71,10 +71,10 @@ angular.module('restaurants', ['ngRoute'])
       function() { return that.filters.price; },
       function() { return that.filters.rating; }
     ], filterRestaurants);
-})
+}])
 
 
-.controller('MenuController', function(restaurants, $routeParams, $location) {
+.controller('MenuController', ['restaurants', '$routeParams', '$location', function(restaurants, $routeParams, $location) {
   var restaurantId = $routeParams.id;
   for(var i=0; i<restaurants.length; i++) {
     if (restaurants[i].id == restaurantId) {
@@ -86,4 +86,4 @@ angular.module('restaurants', ['ngRoute'])
     console.log('missing restaurant', restaurantId);
     $location.path('/');
   }
-});
+}]);

@@ -32,11 +32,13 @@
     <tr ng-repeat="restaurant in component.filteredRestaurants | orderBy : component.sortProperty : component.sortDirection">
       <td class="description">
         <div class="media">
-          <a class="pull-left">
+          <a class="pull-left" href="#/restaurants/{{restaurant.id}}">
             <img class="img-rounded" ng-src="../shared/img/restaurants/{{restaurant.id}}.jpg">
           </a>
           <div class="media-body">
-            <h4 class="media-heading">{{restaurant.name}}</h4>
+            <h4 class="media-heading">
+              <a href="#/restaurants/{{restaurant.id}}">{{restaurant.name}}</a>
+            </h4>
             <p>{{restaurant.description}}</p>
           </div>
         </div>

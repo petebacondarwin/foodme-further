@@ -1,227 +1,134 @@
-# Step 9 - Move restaurant logic into component
+# Step 10 - add animated navigation indicators
 
 ## Where are we?
 
 An Angular application running from a local webserver;
-with unit tests and e2e tests; and routing
+with unit tests and e2e tests; and componentized routing
 
 ## Goals
 
-* Move restaurants route config and logic into its own module
+* Add CSS classes to show which is the currently selected route
+* Use ngAnimate to animate these class changes with CSS transitions
 
 ## Topics
 
-* $routeProvider
+* ngClass
+* ngAnimate
+* CSS transitions
 
 ## Tasks
 
-* Create a `restaurants` module in `components/restaurants/index.js`
+* Create a `NavigationController` in app.js, which provides `routeIs()` helper
 
 ```js
-angular.module('restaurants', [])
+.controller('NavigationController', function($location) {
 
-```
-
-* Load this new `index.js` file in index.html
-
-```html
-  <script src="components/restaurants/index.js"></script>
-```
-
-* Add the `restaurants` module as dependency of the `app` module
-
-```js
-angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute',
-                       'localStorage', 'rating', 'restaurants'])
-
-```
-
-* Add a new `RestaurantsController` to the `restaurants` module
-
-```js
-.controller('RestaurantsController', function($http, $rootScope) {
-
-  var that = this;
-  // var url = 'https://foodme.firebaseio.com/.json'; // CORS enabled server
-  var url = '../shared/data/restaurants.json'; // Local webserver
-
-  $http.get(url).then(function(response) {
-    that.restaurants = response.data;
-  });
-
-
-  this.sortProperty = 'name';
-  this.sortDirection = false;
-
-  this.sortBy = function(property) {
-    if ( this.sortProperty === property ) {
-      this.sortDirection = !this.sortDirection;
-    } else {
-      this.sortProperty = property;
-      this.sortDirection = false;
-    }
+  this.routeIs = function(routeName) {
+    return $location.path() === routeName;
   };
 
-  this.getSortClass = function(property) {
-    if ( this.sortProperty === property ) {
-      return 'glyphicon glyphicon-chevron-' + (this.sortDirection ? 'down' : 'up');
-    }
-  };
-
-  this.filters = {
-    price: null,
-    rating: null
-  };
-
-  var filterRestaurants = function() {
-    that.filteredRestaurants = [];
-    angular.forEach(that.restaurants, function(restaurant) {
-      if ( ( !that.filters.rating || restaurant.rating >= that.filters.rating ) &&
-           ( !that.filters.price || restaurant.price <= that.filters.price ) ) {
-        that.filteredRestaurants.push(restaurant);
-      }
-    });
-  };
-
-  $rootScope.$watchGroup([
-      function() { return that.filters.price; },
-      function() { return that.filters.rating; },
-      function() { return that.restaurants; }
-    ], filterRestaurants);
 });
 ```
 
-* Remove this logic from the `AppController`
-
-* Move the `restaurants` route config into the `restaurants` module and load the new controller
+* Add unit tests for this controller to app.spec.js
 
 ```js
-angular.module('restaurants', [])
+describe('NavigationController', function() {
+  var controller;
 
-.config(function($routeProvider) {
-  $routeProvider
-    .when('/restaurants', {
-      templateUrl: 'components/restaurants',
-      controller: 'RestaurantsController as component'
-    });
-})
+  beforeEach(module('app'));
+  beforeEach(inject(function($controller) {
+    controller = $controller('NavigationController', {});
+  }));
+
+  describe('routeIs', function() {
+    it('should return true if the current route matches the parameter', inject(function($location) {
+      $location.path('/test-route');
+      expect(controller.routeIs('/other-route')).toBe(false);
+      expect(controller.routeIs('/test-route')).toBe(true);
+    }));
+  })
+});
 ```
 
-* Update the restaurants view to use the new `RestaurantsController`
-
-(Replace all instances of `app.` with `component.`)
-
-```html
-  <form role="form" class="well" name="component.filterForm">
-  ...
-    <fm-rating id="priceFilter" rating="component.filters.price" glyph="gbp"></fm-rating>
-  ...
-    <th><a href ng-click="component.sortBy('name')">Name <span ng-class="component.getSortClass('name')">
-  ...
-```
-
-* Update the Protractor HomePage PageObject to reference this new controller
-
-```js
-  getRestaurantList: function(column) {
-    var repeater = by.repeater('restaurant in component.filteredRestaurants');
-    if (column) {
-      repeater = repeater.column(column);
-    }
-    return element.all(repeater);
-  }
-```
-
-* Check that the protractor tests still pass
+* Check that the unit tests still pass
 
 ```bash
-$ protractor protractor.conf.js
+$ karma start --single-run
 ```
 
-* Move the restaurant specific unit tests from the `AppController` into the `RestaurantsController`
 
-```js
-describe('restaurants', function() {
+* Add this controller to the navigation bar using `ng-controller`
 
-  beforeEach(module('restaurants'));
-
-  describe('RestaurantsController', function() {
-
-    var controller;
-
-    beforeEach(inject(function($controller, $httpBackend) {
-      $httpBackend.when('GET', '../shared/data/restaurants.json').respond([
-        { id: 'test1', price: 1, rating: 3 },
-        { id: 'test2', price: 2, rating: 4 },
-        { id: 'test3', price: 3, rating: 5 }
-      ]);
-      controller = $controller('RestaurantsController', {});
-    }));
-
-    it('should initialize controller properties', function() {
-      expect(controller.sortProperty).toEqual('name');
-      expect(controller.sortDirection).toBe(false);
-      expect(controller.filters).toEqual({ price: null, rating: null});
-    });
-
-    it('should attach the restaurant data when it arrives', inject(function($httpBackend) {
-      $httpBackend.flush();
-      expect(controller.restaurants).toEqual([
-        { id: 'test1', price: 1, rating: 3 },
-        { id: 'test2', price: 2, rating: 4 },
-        { id: 'test3', price: 3, rating: 5 }
-      ]);
-    }));
-
-
-    describe('filteredRestaurants', function() {
-
-      beforeEach(inject(function($httpBackend) {
-        $httpBackend.flush();
-      }));
-
-      it('should contain the full list after the restaurants have loaded', function() {
-        expect(controller.filteredRestaurants).toEqual([
-          { id: 'test1', price: 1, rating: 3 },
-          { id: 'test2', price: 2, rating: 4 },
-          { id: 'test3', price: 3, rating: 5 }
-        ]);
-      });
-
-      it('should update the list when the filters change', inject(function($rootScope) {
-        controller.filters.price = 2;
-        $rootScope.$digest();
-        expect(controller.filteredRestaurants).toEqual([
-          { id: 'test1', price: 1, rating: 3 },
-          { id: 'test2', price: 2, rating: 4 }
-        ]);
-
-        controller.filters.rating = 4;
-        $rootScope.$digest();
-        expect(controller.filteredRestaurants).toEqual([
-          { id: 'test2', price: 2, rating: 4 }
-        ]);
-      }));
-    });
-  });
-})
+```html
+  <!-- Navigation Bar -->
+  <div class="navbar navbar-default" ng-controller="NavigationController as nav">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#/">FoodMe</a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li ng-class="{active: nav.routeIs('/restaurants')}"><a href="#/">Home</a></li>
+          <li ng-class="{active: nav.routeIs('/how-it-works')}"><a href="#/how-it-works">How it works</a></li>
+          <li ng-class="{active: nav.routeIs('/about-us')}"><a href="#/about-us">Who we are</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li ng-class="{active: nav.routeIs('/help')}"><a href="#/help">Help</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 ```
 
-* Update the karma config to load these new files
+* Load `angular-animate.js` in index.html
+
+```html
+  <script src="../node_modules/angular-animate/angular-animate.js"></script>
+```
+
+* Add `ngAnimate` as a dependency of the `app` module
 
 ```js
-    files: [
-      '../node_modules/angular/angular.js',
-      '../node_modules/angular-messages/angular-messages.js',
-      '../node_modules/angular-message-format/angular-message-format.js',
-      '../node_modules/angular-route/angular-route.js',
-      '../node_modules/angular-mocks/angular-mocks.js',
-      '*.js',
-      'components/*/*.js'
-    ],
+angular.module('app', ['ngMessages', 'ngMessageFormat', 'ngRoute', 'ngAnimate',
+                       'localStorage', 'rating', 'restaurants'])
+```
+
+* Note that the shared/css/app.css file has relevant CSS transition styles
+
+```css
+.navbar-nav > li, .navbar-nav > li > a {
+  transition: 0.5s ease-out all;
+}
+
+.navbar-nav > li.active-add-active a {
+  background-color: white !important;
+}
+```
+
+* Add `angular-animate.js` to the Karma config
+
+```js
+files: [
+  '../node_modules/angular/angular.js',
+  '../node_modules/angular-messages/angular-messages.js',
+  '../node_modules/angular-message-format/angular-message-format.js',
+  '../node_modules/angular-route/angular-route.js',
+  '../node_modules/angular-animate/angular-animate.js',
+  '../node_modules/angular-mocks/angular-mocks.js',
+  '*.js',
+  'components/*/*.js'
+],
+```
+
+* Check that the unit tests still pass
+
+```bash
+$ karma start --single-run
 ```
 
 
 ## Extras
 
-* Try moving the config for the static views into their own modules
+* Define your own transitions for the navigation
+* Define CSS classes to animate the restaurant list changing as it is filtered

@@ -36,7 +36,7 @@ describe('restaurants', function() {
 
     var controller, restaurants;
 
-    beforeEach(inject(function($controller) {
+    beforeEach(inject(function($controller, $httpBackend) {
       restaurants = [
         { id: 'test1', price: 1, rating: 3 },
         { id: 'test2', price: 2, rating: 4 },

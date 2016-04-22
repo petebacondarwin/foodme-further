@@ -1,37 +1,23 @@
 angular.module('restaurants', ['ngRoute'])
 
-.config(['$routeProvider', function($routeProvider) {
+.config(function($routeProvider) {
   $routeProvider
     .when('/restaurants', {
       templateUrl: 'components/restaurants',
-      controller: 'RestaurantsController as component',
-      resolve: {
-        restaurants: 'restaurantListPromise'
-      }
-    })
-    .when('/restaurants/:id', {
-      templateUrl: 'components/restaurants/menu.html',
-      controller: 'MenuController as component',
-      resolve: {
-        restaurants: 'restaurantListPromise'
-      }
+      controller: 'RestaurantsController as component'
     });
-}])
+})
 
-.factory('restaurantListPromise', ['$http', function($http) {
+.controller('RestaurantsController', function($http, $rootScope) {
 
+  var that = this;
   // var url = 'https://foodme.firebaseio.com/.json'; // CORS enabled server
   var url = '../shared/data/restaurants.json'; // Local webserver
 
-  return $http.get(url).then(function(response) {
-    return response.data;
+  $http.get(url).then(function(response) {
+    that.restaurants = response.data;
   });
 
-}])
-
-.controller('RestaurantsController', ['restaurants', '$rootScope', function(restaurants, $rootScope) {
-
-  var that = this;
 
   this.sortProperty = 'name';
   this.sortDirection = false;
@@ -56,10 +42,9 @@ angular.module('restaurants', ['ngRoute'])
     rating: null
   };
 
-
   var filterRestaurants = function() {
     that.filteredRestaurants = [];
-    angular.forEach(restaurants, function(restaurant) {
+    angular.forEach(that.restaurants, function(restaurant) {
       if ( ( !that.filters.rating || restaurant.rating >= that.filters.rating ) &&
            ( !that.filters.price || restaurant.price <= that.filters.price ) ) {
         that.filteredRestaurants.push(restaurant);
@@ -69,21 +54,7 @@ angular.module('restaurants', ['ngRoute'])
 
   $rootScope.$watchGroup([
       function() { return that.filters.price; },
-      function() { return that.filters.rating; }
+      function() { return that.filters.rating; },
+      function() { return that.restaurants; }
     ], filterRestaurants);
-}])
-
-
-.controller('MenuController', ['restaurants', '$routeParams', '$location', function(restaurants, $routeParams, $location) {
-  var restaurantId = $routeParams.id;
-  for(var i=0; i<restaurants.length; i++) {
-    if (restaurants[i].id == restaurantId) {
-      this.restaurant = restaurants[i];
-      break;
-    }
-  }
-  if (!this.restaurant) {
-    console.log('missing restaurant', restaurantId);
-    $location.path('/');
-  }
-}]);
+});

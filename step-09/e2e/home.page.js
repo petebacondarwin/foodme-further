@@ -23,7 +23,7 @@ HomePage.prototype = {
   },
 
   getRestaurantList: function(column) {
-    var repeater = by.repeater('restaurant in app.filteredRestaurants');
+    var repeater = by.repeater('restaurant in component.filteredRestaurants');
     if (column) {
       repeater = repeater.column(column);
     }

@@ -38,7 +38,6 @@ describe('fmRating directive', function() {
     $scope.$apply('model = { value: 0 }');
   }));
 
-
   it('should contain five star glyphs', function() {
     expect(element.find('li').length).toEqual(5);
     expect(element.find('span')).toHaveClass('glyphicon-star', 5);

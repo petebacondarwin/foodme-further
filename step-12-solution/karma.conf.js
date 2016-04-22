@@ -18,9 +18,9 @@ module.exports = function(config) {
       '../node_modules/angular/angular.js',
       '../node_modules/angular-*/angular-*.js',
       '*.js',
-      'components/*/*.js'
+      'components/*/*.js',
+      '**/*.template.html'
     ],
-
 
     // list of files to exclude
     exclude: [
@@ -31,8 +31,12 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      '**/*.template.html': ['ng-html2js']
     },
 
+
+    ngHtml2JsPreprocessor: {
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
