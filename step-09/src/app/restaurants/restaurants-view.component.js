@@ -1,4 +1,4 @@
-angular.module('app/restaurants/restaurants', [
+angular.module('app/restaurants/restaurants-view', [
   'app/customer/user-form',
   'app/customer/delivery-info',
   'app/customer/user-service',
