@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Fri Apr 17 2015 11:11:01 GMT+0100 (BST)
+// Generated on Thu Apr 21 2016 20:10:41 GMT+0100 (BST)
 
 module.exports = function(config) {
   config.set({
@@ -15,28 +15,26 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '../node_modules/angular/angular.js',
-      '../node_modules/angular-*/angular-*.js',
-      '*.js',
-      'components/*/*.js',
-      '**/*.template.html'
+      'node_modules/angular/angular.js',
+      'node_modules/angular-*/angular-*.js',
+      'node_modules/angular-ui-router/release/angular-ui-router.js',
+      'src/**/*.js',
+      'src/**/*.template.html'
     ],
+
 
     // list of files to exclude
     exclude: [
-      'protractor.conf.js'
+      'node_modules/angular-*/angular-*.min.js'
     ],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '**/*.template.html': ['ng-html2js']
+      'src/**/*.template.html': ['ng-html2js']
     },
 
-
-    ngHtml2JsPreprocessor: {
-    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -68,6 +66,10 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
-  });
-};
+    singleRun: false,
+
+    // Concurrency level
+    // how many browser should be started simultaneous
+    concurrency: Infinity
+  })
+}
