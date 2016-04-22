@@ -1,6 +1,8 @@
 angular.module('app/restaurants/restaurant-view', [
   'app/restaurants/restaurant-info',
-  'app/restaurants/menu'
+  'app/restaurants/menu',
+  'app/order/current-order',
+  'app/order/order-widget'
 ])
 
 .component('fmRestaurantView', {
@@ -8,8 +10,9 @@ angular.module('app/restaurants/restaurant-view', [
   controller: FmRestaurantView
 });
 
-function FmRestaurantView(restaurantService, $state) {
+function FmRestaurantView(restaurantService, currentOrder, $state) {
   this.restaurantService = restaurantService;
+  this.order = currentOrder;
   this.$state = $state;
 }
 
@@ -19,4 +22,8 @@ FmRestaurantView.prototype.$onInit = function() {
   this.restaurantService.loadOne(restaurantId).then(function(restaurant) {
     _this.restaurant = restaurant;
   });
+};
+
+FmRestaurantView.prototype.addToOrder = function(item) {
+  this.order.addToOrder(this.restaurant, item);
 };
