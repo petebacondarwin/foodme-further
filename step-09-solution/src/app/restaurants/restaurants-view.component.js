@@ -5,8 +5,8 @@ angular.module('app/restaurants/restaurants-view', [
   'app/restaurants/restaurant-list'
 ])
 
-.component('fmRestaurants', {
-  templateUrl: 'src/app/restaurants/restaurants.template.html',
+.component('fmRestaurantsView', {
+  templateUrl: 'src/app/restaurants/restaurants-view.template.html',
   controller: FmRestaurants
 });
 
