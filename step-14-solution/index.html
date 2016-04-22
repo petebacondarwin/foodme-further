@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Angular FoodMe</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/bootstrap-cerulean.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script src="node_modules/angular/angular.js"></script>
+  <script src="node_modules/angular-messages/angular-messages.js"></script>
+  <script src="node_modules/angular-message-format/angular-message-format.js"></script>
+  <script src="node_modules/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="node_modules/angular-animate/angular-animate.js"></script>
+  <script src="dist/app.js"></script>
+</head>
+<body class="container" ng-app="app" ng-strict-di>
+
+  <fm-navigation></fm-navigation>
+
+  <ui-view autoscroll></ui-view>
+
+
+</body>
+</html>
