@@ -1,0 +1,15 @@
+<div class="row fm-restaurant">
+  <div class="col-md-2">
+    <img ng-src="assets/images/restaurants/{{$ctrl.restaurant.id}}.jpg" class="img-rounded">
+  </div>
+  <div class="col-md-10">
+    <h3>{{$ctrl.restaurant.name}}</h3>
+
+    <div class="col-md-2">
+      <div>{{$ctrl.restaurant.address}}</div>
+      <div ng-bind-html="$ctrl.restaurant.rating | rating : '*'"></div>
+      <div ng-bind-html="$ctrl.restaurant.price | rating : '£'"></div>
+    </div>
+    <div class="col-md-4">{{$ctrl.restaurant.description}}</div>
+  </div>
+</div>

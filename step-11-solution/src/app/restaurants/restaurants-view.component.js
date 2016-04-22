@@ -1,12 +1,12 @@
-angular.module('app/restaurants/restaurants', [
+angular.module('app/restaurants/restaurants-view', [
   'app/customer/user-form',
   'app/customer/delivery-info',
   'app/customer/user-service',
   'app/restaurants/restaurant-list'
 ])
 
-.component('fmRestaurants', {
-  templateUrl: 'src/app/restaurants/restaurants.template.html',
+.component('fmRestaurantsView', {
+  templateUrl: 'src/app/restaurants/restaurants-view.template.html',
   controller: FmRestaurants
 });
 

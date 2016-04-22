@@ -2,7 +2,7 @@ angular.module('app', [
   'ui.router',
   'ngMessages',
   'ngMessageFormat',
-  'app/restaurants/restaurants'
+  'app/restaurants/restaurants-view'
 ])
 
 .config(function($locationProvider) {
@@ -13,6 +13,6 @@ angular.module('app', [
   $stateProvider
     .state('restaurants', {
       url: '/',
-      template: '<fm-restaurants></fm-restaurants>'
+      template: '<fm-restaurants-view></fm-restaurants-view>'
     })
 });

@@ -1,0 +1,14 @@
+<fm-restaurant-detail restaurant="$ctrl.restaurant"></fm-restaurant-detail>
+
+<div class="row">
+  <div class="col-md-8">
+    <fm-menu
+        restaurant="$ctrl.restaurant"
+        on-choose-item="$ctrl.addToOrder(item)">
+    </fm-menu>
+  </div>
+  <div class="col-md-4">
+    <fm-order-widget></fm-order-widget>
+    <fm-customer-widget></fm-customer-widget>
+  </div>
+</div>

@@ -1,11 +1,11 @@
 describe('fmRestaurants controller', function() {
   var controller;
 
-  beforeEach(module('app/restaurants/restaurants'));
+  beforeEach(module('app/restaurants/restaurants-view'));
   beforeEach(inject(function($componentController, localStorage) {
     localStorage['foodMe/user'] =
         '{ "name": "Test User", "address": "Test Address" }';
-    controller = $componentController('fmRestaurants', {});
+    controller = $componentController('fmRestaurantsView', {});
   }));
 
   it('should initialize controller properties', function() {

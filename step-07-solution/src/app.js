@@ -2,7 +2,7 @@ angular.module('app', [
   'ui.router',
   'ngMessages',
   'ngMessageFormat',
-  'app/restaurants/restaurants',
+  'app/restaurants/restaurants-view',
   'app/info/help',
   'app/info/who-we-are',
   'app/info/how-it-works'
@@ -16,7 +16,7 @@ angular.module('app', [
   $stateProvider
     .state('restaurants', {
       url: '/',
-      template: '<fm-restaurants></fm-restaurants>'
+      template: '<fm-restaurants-view></fm-restaurants-view>'
     })
     .state('how-it-works', {
       url: '/how-it-works',
