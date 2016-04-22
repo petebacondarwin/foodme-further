@@ -1,0 +1,16 @@
+<!-- Delivery Info Form -->
+<fm-user-form
+    user="$ctrl.user"
+    on-save="$ctrl.saveUser(user)"
+    ng-show="$ctrl.deliveryFormVisible">
+</fm-user-form>
+
+<!-- Delivery Info -->
+<fm-delivery-info
+    user="$ctrl.user"
+    on-edit-user="$ctrl.showDeliveryForm()"
+    ng-hide="$ctrl.deliveryFormVisible">
+</fm-delivery-info>
+
+<!-- Restaurant List -->
+<fm-restaurant-list></fm-restaurant-list>
