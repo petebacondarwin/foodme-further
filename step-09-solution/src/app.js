@@ -1,7 +1,9 @@
 angular.module('app', [
   'ui.router',
+  'ngAnimate',
   'ngMessages',
   'ngMessageFormat',
+  'app/navigation/navigation',
   'app/restaurants/restaurants',
   'app/info/help',
   'app/info/who-we-are',
