@@ -11,7 +11,6 @@ angular.module('app/restaurants/restaurants-view', [
 });
 
 function FmRestaurants(userService) {
-  console.log('here');
 
   this.deliveryFormVisible = true;
 
