@@ -4,10 +4,9 @@
   "description": "",
   "scripts": {
     "start": "lite-server",
-    "prebuild": "mkdir -p dist",
-    "build": "babel src -o dist/app.js --ignore=**/*.spec.js --source-maps",
+    "build": "babel src -o dist/app.js --ignore=**/*.spec.js",
+    "watch": "babel src -w -o dist/app.js --ignore=**/*.spec.js",
     "annotate": "ng-annotate -a dist/app.js -o dist/app.js",
-    "watch": "watchy -w src -- npm run build",
     "test": "karma start",
     "pree2e": "webdriver-manager update",
     "e2e": "protractor protractor.conf.js"
