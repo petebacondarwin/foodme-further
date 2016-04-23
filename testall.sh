@@ -1,16 +1,10 @@
-cd step-01-solution
-pwd
-karma start --single-run
-cd ..
-
-for i in {2..15}
+./reset-to-step.sh 01
+cd workspace
+for i in {1..14}
 do
-  cd step-`printf %02d $i`
-  pwd
+  ../reset-to-step.sh `printf %02d $i`
   karma start --single-run
-  cd ..
-  cd step-`printf %02d $i`-solution
-  pwd
+  ../reset-to-step.sh `printf %02d $i`-solution
   karma start --single-run
-  cd ..
 done
+cd ..
